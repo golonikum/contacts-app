@@ -1,39 +1,45 @@
+"use client";
 
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { User } from "@prisma/client";
 
 export default function MainPage() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loggedInUser, setUser] = useState<User | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     // Check if user is logged in
-    const loginStatus = localStorage.getItem('isLoggedIn');
-    if (loginStatus !== 'true') {
+    const user = localStorage.getItem("user");
+
+    if (!user) {
       // Redirect to login page if not logged in
-      router.push('/login');
+      router.push("/login");
     } else {
-      setIsLoggedIn(true);
+      setUser(JSON.parse(user) as User);
     }
   }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem('isLoggedIn');
-    router.push('/login');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    router.push("/login");
   };
 
-  if (!isLoggedIn) {
-    return <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
-      <div className="text-zinc-900 dark:text-zinc-50">Loading...</div>
-    </div>;
+  if (!loggedInUser) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
+        <div className="text-zinc-900 dark:text-zinc-50">Loading...</div>
+      </div>
+    );
   }
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md dark:bg-black dark:border dark:border-zinc-800">
-        <h1 className="mb-6 text-3xl font-bold text-center text-black dark:text-zinc-50">Hello world!</h1>
+        <h1 className="mb-6 text-3xl font-bold text-center text-black dark:text-zinc-50">
+          Welcome {loggedInUser.email}!
+        </h1>
 
         <div className="mt-8 text-center">
           <button
