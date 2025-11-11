@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { User } from "@prisma/client";
+import { User as PrismaUser } from "@prisma/client";
+import { User } from "@/types/user";
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret";
 
@@ -15,17 +16,15 @@ export async function verifyPassword(
   return bcrypt.compare(password, hashedPassword);
 }
 
-export function generateToken(user: User): string {
+export function generateToken(user: PrismaUser): string {
   return jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
     expiresIn: "7d",
   });
 }
 
-export function verifyToken(
-  token: string
-): { id: string; email: string } | null {
+export function verifyToken(token: string): User | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as { id: string; email: string };
+    return jwt.verify(token, JWT_SECRET) as User;
   } catch (error) {
     return null;
   }
