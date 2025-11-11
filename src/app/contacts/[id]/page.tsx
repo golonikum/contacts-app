@@ -8,7 +8,11 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { ContactName, ContactContacts, Contact } from "@/types/contact";
-import { getContactById, updateContact, deleteContact } from "@/services/contactService";
+import {
+  getContactById,
+  updateContact,
+  deleteContact,
+} from "@/services/contactService";
 import { Plus, Trash2, ArrowLeft, Edit, Save, X } from "lucide-react";
 
 export default function ContactDetailPage() {
@@ -290,7 +294,9 @@ export default function ContactDetailPage() {
                     <Input
                       id="firstName"
                       value={formData.name.firstName}
-                      onChange={(e) => handleNameChange("firstName", e.target.value)}
+                      onChange={(e) =>
+                        handleNameChange("firstName", e.target.value)
+                      }
                       required
                     />
                   </div>
@@ -299,7 +305,9 @@ export default function ContactDetailPage() {
                     <Input
                       id="lastName"
                       value={formData.name.lastName}
-                      onChange={(e) => handleNameChange("lastName", e.target.value)}
+                      onChange={(e) =>
+                        handleNameChange("lastName", e.target.value)
+                      }
                       required
                     />
                   </div>
@@ -308,7 +316,9 @@ export default function ContactDetailPage() {
                     <Input
                       id="middleName"
                       value={formData.name.middleName}
-                      onChange={(e) => handleNameChange("middleName", e.target.value)}
+                      onChange={(e) =>
+                        handleNameChange("middleName", e.target.value)
+                      }
                     />
                   </div>
                   <div>
@@ -316,7 +326,9 @@ export default function ContactDetailPage() {
                     <Input
                       id="dignity"
                       value={formData.name.dignity}
-                      onChange={(e) => handleNameChange("dignity", e.target.value)}
+                      onChange={(e) =>
+                        handleNameChange("dignity", e.target.value)
+                      }
                     />
                   </div>
                 </div>
@@ -456,7 +468,9 @@ export default function ContactDetailPage() {
                   {contact.name.middleName && ` ${contact.name.middleName}`}
                 </p>
                 {contact.name.dignity && (
-                  <p className="text-muted-foreground">{contact.name.dignity}</p>
+                  <p className="text-muted-foreground">
+                    {contact.name.dignity}
+                  </p>
                 )}
               </div>
 
@@ -479,28 +493,30 @@ export default function ContactDetailPage() {
               )}
 
               {/* Phone numbers display */}
-              {contact.contacts.phones && contact.contacts.phones.length > 0 && (
-                <div>
-                  <h3 className="text-lg font-medium mb-2">Телефоны</h3>
-                  <div className="space-y-1">
-                    {contact.contacts.phones.map((phone, index) => (
-                      <p key={index}>{phone}</p>
-                    ))}
+              {contact.contacts.phones &&
+                contact.contacts.phones.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-medium mb-2">Телефоны</h3>
+                    <div className="space-y-1">
+                      {contact.contacts.phones.map((phone, index) => (
+                        <p key={index}>{phone}</p>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
               {/* Email addresses display */}
-              {contact.contacts.emails && contact.contacts.emails.length > 0 && (
-                <div>
-                  <h3 className="text-lg font-medium mb-2">Email</h3>
-                  <div className="space-y-1">
-                    {contact.contacts.emails.map((email, index) => (
-                      <p key={index}>{email}</p>
-                    ))}
+              {contact.contacts.emails &&
+                contact.contacts.emails.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-medium mb-2">Email</h3>
+                    <div className="space-y-1">
+                      {contact.contacts.emails.map((email, index) => (
+                        <p key={index}>{email}</p>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
               {/* Events display */}
               {contact.events && Object.keys(contact.events).length > 0 && (
