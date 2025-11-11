@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -14,6 +15,7 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { login } = useAuth();
 
   // Check if user is already logged in
   useEffect(() => {
@@ -22,7 +24,7 @@ export default function LoginForm() {
       router.push("/main");
       return;
     }
-    
+
     // Check for success message from registration
     const message = searchParams.get("message");
     if (message) {
@@ -49,7 +51,7 @@ export default function LoginForm() {
       if (response.ok) {
         // Store token in localStorage
         localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
+        login(data.user);
         // Redirect to main page
         router.push("/main");
       } else {

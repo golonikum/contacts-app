@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ContactName, ContactContacts } from "@/types/contact";
 import { createContact } from "@/services/contactService";
 import { Plus, Trash2 } from "lucide-react";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 export default function NewContactPage() {
   const router = useRouter();
@@ -168,194 +169,204 @@ export default function NewContactPage() {
   };
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <Card className="max-w-2xl mx-auto">
-        <CardHeader>
-          <CardTitle className="text-2xl">Новый контакт</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Name fields */}
-            <div className="space-y-2">
-              <h3 className="text-lg font-medium">Имя</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="firstName">Имя</Label>
-                  <Input
-                    id="firstName"
-                    value={formData.name.firstName}
-                    onChange={(e) => handleNameChange("firstName", e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="lastName">Фамилия</Label>
-                  <Input
-                    id="lastName"
-                    value={formData.name.lastName}
-                    onChange={(e) => handleNameChange("lastName", e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="middleName">Отчество</Label>
-                  <Input
-                    id="middleName"
-                    value={formData.name.middleName}
-                    onChange={(e) => handleNameChange("middleName", e.target.value)}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="dignity">Должность</Label>
-                  <Input
-                    id="dignity"
-                    value={formData.name.dignity}
-                    onChange={(e) => handleNameChange("dignity", e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Address field */}
-            <div className="space-y-2">
-              <Label htmlFor="address">Адрес</Label>
-              <Textarea
-                id="address"
-                value={formData.address}
-                onChange={(e) => handleAddressChange(e.target.value)}
-                rows={3}
-              />
-            </div>
-
-            {/* Group field */}
-            <div className="space-y-2">
-              <Label htmlFor="group">Группа</Label>
-              <Input
-                id="group"
-                value={formData.group}
-                onChange={(e) => handleGroupChange(e.target.value)}
-              />
-            </div>
-
-            {/* Phone numbers */}
-            <div className="space-y-2">
-              <h3 className="text-lg font-medium">Телефоны</h3>
-              {formData.contacts.phones.map((phone, index) => (
-                <div key={index} className="flex gap-2">
-                  <Input
-                    value={phone}
-                    onChange={(e) => handlePhoneChange(index, e.target.value)}
-                    placeholder="Номер телефона"
-                  />
-                  {formData.contacts.phones.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() => removePhoneField(index)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              ))}
-              <Button
-                type="button"
-                variant="outline"
-                onClick={addPhoneField}
-                className="mt-2"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Добавить телефон
-              </Button>
-            </div>
-
-            {/* Email addresses */}
-            <div className="space-y-2">
-              <h3 className="text-lg font-medium">Email</h3>
-              {formData.contacts.emails.map((email, index) => (
-                <div key={index} className="flex gap-2">
-                  <Input
-                    value={email}
-                    onChange={(e) => handleEmailChange(index, e.target.value)}
-                    placeholder="Email адрес"
-                    type="email"
-                  />
-                  {formData.contacts.emails.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() => removeEmailField(index)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              ))}
-              <Button
-                type="button"
-                variant="outline"
-                onClick={addEmailField}
-                className="mt-2"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Добавить email
-              </Button>
-            </div>
-
-            {/* Events */}
-            <div className="space-y-2">
-              <h3 className="text-lg font-medium">События</h3>
-              {Object.entries(formData.events).map(([key, value]) => (
-                <div key={key} className="flex gap-2">
-                  <div className="w-1/3">
-                    <Input value={key} disabled />
-                  </div>
-                  <div className="flex-1">
+    <ProtectedRoute>
+      <div className="container mx-auto py-8 px-4">
+        <Card className="max-w-2xl mx-auto">
+          <CardHeader>
+            <CardTitle className="text-2xl">Новый контакт</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Name fields */}
+              <div className="space-y-2">
+                <h3 className="text-lg font-medium">Имя</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="firstName">Имя</Label>
                     <Input
-                      value={value}
-                      onChange={(e) => handleEventChange(key, e.target.value)}
-                      placeholder="Дата или описание"
+                      id="firstName"
+                      value={formData.name.firstName}
+                      onChange={(e) =>
+                        handleNameChange("firstName", e.target.value)
+                      }
+                      required
                     />
                   </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={() => removeEventField(key)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  <div>
+                    <Label htmlFor="lastName">Фамилия</Label>
+                    <Input
+                      id="lastName"
+                      value={formData.name.lastName}
+                      onChange={(e) =>
+                        handleNameChange("lastName", e.target.value)
+                      }
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="middleName">Отчество</Label>
+                    <Input
+                      id="middleName"
+                      value={formData.name.middleName}
+                      onChange={(e) =>
+                        handleNameChange("middleName", e.target.value)
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="dignity">Должность</Label>
+                    <Input
+                      id="dignity"
+                      value={formData.name.dignity}
+                      onChange={(e) =>
+                        handleNameChange("dignity", e.target.value)
+                      }
+                    />
+                  </div>
                 </div>
-              ))}
-              <Button
-                type="button"
-                variant="outline"
-                onClick={addEventField}
-                className="mt-2"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Добавить событие
-              </Button>
-            </div>
+              </div>
 
-            {/* Submit button */}
-            <div className="flex justify-end gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => router.push("/contacts")}
-              >
-                Отмена
-              </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Сохранение..." : "Сохранить"}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+              {/* Address field */}
+              <div className="space-y-2">
+                <Label htmlFor="address">Адрес</Label>
+                <Textarea
+                  id="address"
+                  value={formData.address}
+                  onChange={(e) => handleAddressChange(e.target.value)}
+                  rows={3}
+                />
+              </div>
+
+              {/* Group field */}
+              <div className="space-y-2">
+                <Label htmlFor="group">Группа</Label>
+                <Input
+                  id="group"
+                  value={formData.group}
+                  onChange={(e) => handleGroupChange(e.target.value)}
+                />
+              </div>
+
+              {/* Phone numbers */}
+              <div className="space-y-2">
+                <h3 className="text-lg font-medium">Телефоны</h3>
+                {formData.contacts.phones.map((phone, index) => (
+                  <div key={index} className="flex gap-2">
+                    <Input
+                      value={phone}
+                      onChange={(e) => handlePhoneChange(index, e.target.value)}
+                      placeholder="Номер телефона"
+                    />
+                    {formData.contacts.phones.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => removePhoneField(index)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={addPhoneField}
+                  className="mt-2"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Добавить телефон
+                </Button>
+              </div>
+
+              {/* Email addresses */}
+              <div className="space-y-2">
+                <h3 className="text-lg font-medium">Email</h3>
+                {formData.contacts.emails.map((email, index) => (
+                  <div key={index} className="flex gap-2">
+                    <Input
+                      value={email}
+                      onChange={(e) => handleEmailChange(index, e.target.value)}
+                      placeholder="Email адрес"
+                      type="email"
+                    />
+                    {formData.contacts.emails.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => removeEmailField(index)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={addEmailField}
+                  className="mt-2"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Добавить email
+                </Button>
+              </div>
+
+              {/* Events */}
+              <div className="space-y-2">
+                <h3 className="text-lg font-medium">События</h3>
+                {Object.entries(formData.events).map(([key, value]) => (
+                  <div key={key} className="flex gap-2">
+                    <div className="w-1/3">
+                      <Input value={key} disabled />
+                    </div>
+                    <div className="flex-1">
+                      <Input
+                        value={value}
+                        onChange={(e) => handleEventChange(key, e.target.value)}
+                        placeholder="Дата или описание"
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => removeEventField(key)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={addEventField}
+                  className="mt-2"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Добавить событие
+                </Button>
+              </div>
+
+              {/* Submit button */}
+              <div className="flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => router.push("/contacts")}
+                >
+                  Отмена
+                </Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? "Сохранение..." : "Сохранить"}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    </ProtectedRoute>
   );
 }

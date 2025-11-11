@@ -6,17 +6,17 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const router = useRouter();
 
-  useEffect(() => {
-    // Check if user is logged in
-    const token = localStorage.getItem("token");
-    if (token) {
-      // Redirect to main page if logged in
-      router.push("/main");
-    } else {
-      // Redirect to login page if not logged in
-      router.push("/login");
-    }
-  }, [router]);
+  // useEffect(() => {
+  //   // Check if user is logged in
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     // Redirect to main page if logged in
+  //     router.push("/main");
+  //   } else {
+  //     // Redirect to login page if not logged in
+  //     router.push("/login");
+  //   }
+  // }, [router]);
 
   // Return a loading state while redirecting
   return (
