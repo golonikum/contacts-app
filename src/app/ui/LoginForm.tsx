@@ -2,6 +2,10 @@
 
 import { useState, FormEvent, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -53,10 +57,10 @@ export default function LoginForm() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md dark:bg-black dark:border dark:border-zinc-800">
-        <h1 className="mb-6 text-2xl font-bold text-center text-black dark:text-zinc-50">
-          Вход
-        </h1>
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-center">Вход</CardTitle>
+        </CardHeader>
 
         {error && (
           <div className="mb-4 p-3 text-red-500 bg-red-50 dark:bg-red-900/20 rounded-md">
@@ -65,61 +69,45 @@ export default function LoginForm() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-            >
-              Электронная почта
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="email">Электронная почта</Label>
+            <Input
               id="email"
-              type="text"
+              type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full rounded-md border border-zinc-300 px-3 py-2 shadow-sm focus:border-zinc-500 focus:outline-none focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
               required
             />
           </div>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-            >
-              Пароль
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="password">Пароль</Label>
+            <Input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full rounded-md border border-zinc-300 px-3 py-2 shadow-sm focus:border-zinc-500 focus:outline-none focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
               required
             />
           </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full flex justify-center rounded-md bg-zinc-900 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 disabled:bg-zinc-500 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
-            >
-              {isLoading ? "Вход..." : "Войти"}
-            </button>
-          </div>
+          <Button type="submit" disabled={isLoading} className="w-full">
+            {isLoading ? "Вход..." : "Войти"}
+          </Button>
 
-          <div className="text-center text-sm text-zinc-600 dark:text-zinc-400">
-            Нет аккаунта?{" "}
-            <a
-              href="/register"
-              className="font-medium text-zinc-900 hover:text-zinc-700 dark:text-zinc-50 dark:hover:text-zinc-300"
-            >
-              Регистрация
-            </a>
-          </div>
+          <CardFooter className="flex justify-center">
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              Нет аккаунта?{" "}
+              <a
+                href="/register"
+                className="font-medium text-zinc-900 hover:text-zinc-700 dark:text-zinc-50 dark:hover:text-zinc-300"
+              >
+                Регистрация
+              </a>
+            </p>
+          </CardFooter>
         </form>
-      </div>
+      </Card>
     </div>
   );
 }

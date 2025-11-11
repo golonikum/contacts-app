@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { User } from "@prisma/client";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function MainPage() {
   const [loggedInUser, setUser] = useState<User | null>(null);
@@ -36,20 +38,18 @@ export default function MainPage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md dark:bg-black dark:border dark:border-zinc-800">
-        <h1 className="mb-6 text-3xl font-bold text-center text-black dark:text-zinc-50">
-          Добро пожаловать, {loggedInUser.email}!
-        </h1>
-
-        <div className="mt-8 text-center">
-          <button
-            onClick={handleLogout}
-            className="rounded-md bg-zinc-900 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 dark:bg-white dark:text-black dark:hover:bg-zinc-200"
-          >
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-center text-3xl">
+            Добро пожаловать, {loggedInUser.email}!
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex justify-center mt-8">
+          <Button onClick={handleLogout}>
             Выйти
-          </button>
-        </div>
-      </div>
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 }

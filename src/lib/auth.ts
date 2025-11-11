@@ -23,9 +23,9 @@ export function generateToken(user: User): string {
 
 export function verifyToken(
   token: string
-): { id: string; name: string } | null {
+): { id: string; email: string } | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as { id: string; name: string };
+    return jwt.verify(token, JWT_SECRET) as { id: string; email: string };
   } catch (error) {
     return null;
   }
