@@ -15,13 +15,20 @@ export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Check for success message from registration
+  // Check if user is already logged in
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      router.push("/main");
+      return;
+    }
+    
+    // Check for success message from registration
     const message = searchParams.get("message");
     if (message) {
       setError(message);
     }
-  }, [searchParams]);
+  }, [router, searchParams]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
