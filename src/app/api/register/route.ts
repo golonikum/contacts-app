@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
 
     if (!email || !password) {
       return NextResponse.json(
-        { error: "Name and password are required" },
+        { error: "Электронная почта и пароль обязательны" },
         { status: 400 }
       );
     }
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     if (existingUser) {
       return NextResponse.json(
-        { error: "User already exists" },
+        { error: "Пользователь уже существует" },
         { status: 409 }
       );
     }
@@ -37,13 +37,13 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(
-      { message: "User created successfully", userId: user.id },
+      { message: "Пользователь успешно создан", userId: user.id },
       { status: 201 }
     );
   } catch (error) {
     console.error("Registration error:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Внутренняя ошибка сервера" },
       { status: 500 }
     );
   }
