@@ -8,8 +8,8 @@ export default function Home() {
 
   useEffect(() => {
     // Check if user is logged in
-    const loginStatus = localStorage.getItem("isLoggedIn");
-    if (loginStatus === "true") {
+    const token = localStorage.getItem("token");
+    if (token) {
       // Redirect to main page if logged in
       router.push("/main");
     } else {

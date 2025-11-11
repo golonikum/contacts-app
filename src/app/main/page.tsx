@@ -44,8 +44,11 @@ export default function MainPage() {
             Добро пожаловать, {loggedInUser.email}!
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex justify-center mt-8">
-          <Button onClick={handleLogout}>
+        <CardContent className="flex justify-center gap-4 mt-8">
+          <Button onClick={() => router.push("/contacts")}>
+            Мои контакты
+          </Button>
+          <Button onClick={handleLogout} variant="outline">
             Выйти
           </Button>
         </CardContent>
