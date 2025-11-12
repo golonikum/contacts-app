@@ -14,14 +14,17 @@ export interface ContactEvents {
   [key: string]: string;
 }
 
-export interface Contact {
-  id: string;
-  userId: string;
-  name: ContactName; // Prisma stores this as JSON
+export interface ContactFormValue {
+  name: ContactName;
   address?: string;
   group?: string;
-  events?: ContactEvents; // Prisma stores this as JSON
-  contacts: ContactContacts; // Prisma stores this as JSON
+  events?: ContactEvents;
+  contacts: ContactContacts;
+}
+
+export interface Contact extends ContactFormValue {
+  id: string;
+  userId: string;
   createdAt: Date;
   updatedAt: Date;
 }

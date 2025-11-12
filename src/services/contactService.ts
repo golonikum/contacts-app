@@ -1,4 +1,4 @@
-import { Contact, ContactName, ContactContacts, ContactEvents } from "@/types/contact";
+import { Contact, ContactFormValue } from "@/types/contact";
 import { parseContact } from "@/lib/contactHelpers";
 
 const API_URL = "/api/contacts";
@@ -44,22 +44,12 @@ export const getContactById = async (id: string): Promise<Contact> => {
 
 // Create a new contact
 export const createContact = async (
-  name: ContactName,
-  contacts: ContactContacts,
-  address?: string,
-  group?: string,
-  events?: ContactEvents
+  formData: ContactFormValue
 ): Promise<Contact> => {
   const response = await fetch(API_URL, {
     method: "POST",
     headers: getAuthHeaders(),
-    body: JSON.stringify({
-      name,
-      contacts,
-      address,
-      group,
-      events,
-    }),
+    body: JSON.stringify(formData),
   });
 
   if (!response.ok) {
@@ -73,22 +63,12 @@ export const createContact = async (
 // Update an existing contact
 export const updateContact = async (
   id: string,
-  name: ContactName,
-  contacts: ContactContacts,
-  address?: string,
-  group?: string,
-  events?: ContactEvents
+  formData: ContactFormValue
 ): Promise<Contact> => {
   const response = await fetch(`${API_URL}/${id}`, {
     method: "PUT",
     headers: getAuthHeaders(),
-    body: JSON.stringify({
-      name,
-      contacts,
-      address,
-      group,
-      events,
-    }),
+    body: JSON.stringify(formData),
   });
 
   if (!response.ok) {
