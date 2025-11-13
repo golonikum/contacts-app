@@ -3,6 +3,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const navItems = [
   { href: "/contacts", label: "Контакты" },
@@ -33,7 +34,8 @@ export function Navigation() {
               </Link>
             ))}
           </div>
-          <div className="flex h-16 items-center space-x-8">
+          <div className="flex h-16 items-center space-x-4">
+            <ThemeToggle />
             <span className="text-sm">{user?.email}</span>
             <Button onClick={() => logout()} variant="outline">
               Выйти
