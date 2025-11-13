@@ -38,15 +38,27 @@ export async function POST(request: NextRequest) {
     // Generate a JWT token
     const token = generateToken(user);
 
-    // Return the token and user info
-    return NextResponse.json({
+    // Create response with user info (but not the token)
+    const response = NextResponse.json({
       message: "Вход выполнен успешно",
-      token,
       user: {
         id: user.id,
         email: user.email,
       },
     });
+
+    // Set token in HTTP-only cookie
+    response.cookies.set({
+      name: "token",
+      value: token,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: "/",
+    });
+
+    return response;
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json(

@@ -8,7 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Navigation } from "@/components/Navigation";
 
 export default function MainPage() {
-  const { user, isLoading, logout } = useAuth();
+  const { user, isLoading } = useAuth();
   const router = useRouter();
 
   console.log(user);

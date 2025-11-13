@@ -3,13 +3,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { User } from "@/types/user";
-import { verifyToken } from "@/lib/auth";
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (user: User) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,42 +24,46 @@ export function AuthContextProvider({
   const path = usePathname();
 
   useEffect(() => {
-    // Check for stored token and verify it
-    const token = localStorage.getItem("token");
-
-    if (token) {
+    // Check authentication status with API
+    const checkAuth = async () => {
       try {
-        const decoded = verifyToken(token);
-        if (decoded) {
-          setUser({
-            id: decoded.id,
-            email: decoded.email,
-          });
-        } else {
-          // Invalid token, remove it and redirect to login
-          localStorage.removeItem("token");
+        const response = await fetch("/api/auth");
+        const data = await response.json();
+
+        if (data.authenticated && data.user) {
+          setUser(data.user);
+        } else if (path !== "/register") {
+          // Not authenticated, redirect to login
           router.push("/login");
         }
       } catch (error) {
-        console.error("Error verifying token:", error);
-        localStorage.removeItem("token");
-        router.push("/login");
+        console.error("Error checking authentication:", error);
+        if (path !== "/register") {
+          router.push("/login");
+        }
       }
-    } else if (path !== "/register") {
-      // No token, redirect to login
-      router.push("/login");
-    }
 
-    setIsLoading(false);
-  }, [router]);
+      setIsLoading(false);
+    };
+
+    checkAuth();
+  }, [router, path]);
 
   const login = (userData: User) => {
     setUser(userData);
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      // Call logout API to clear the HTTP-only cookie
+      await fetch("/api/logout", {
+        method: "POST",
+      });
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+
     setUser(null);
-    localStorage.removeItem("token");
     router.push("/login");
   };
 

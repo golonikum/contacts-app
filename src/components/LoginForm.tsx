@@ -19,12 +19,6 @@ export default function LoginForm() {
 
   // Check if user is already logged in
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      router.push("/main");
-      return;
-    }
-
     // Check for success message from registration
     const message = searchParams.get("message");
     if (message) {
@@ -49,8 +43,6 @@ export default function LoginForm() {
       const data = await response.json();
 
       if (response.ok) {
-        // Store token in localStorage
-        localStorage.setItem("token", data.token);
         login(data.user);
         // Redirect to main page
         router.push("/main");
