@@ -14,6 +14,7 @@ import {
 import { Trash2, ArrowLeft, Edit, Save, X } from "lucide-react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { getContactInitialFormValue } from "@/lib/contactHelpers";
+import { Navigation } from "@/components/Navigation";
 
 export default function ContactDetailPage() {
   const router = useRouter();
@@ -99,6 +100,7 @@ export default function ContactDetailPage() {
 
   return (
     <ProtectedRoute>
+      <Navigation />
       <div className="container mx-auto py-8 px-4">
         <div className="mb-6">
           <Button

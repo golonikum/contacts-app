@@ -8,6 +8,7 @@ import { createContact } from "@/services/contactService";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ContactFormValue } from "@/types/contact";
 import { getContactInitialFormValue } from "@/lib/contactHelpers";
+import { Navigation } from "@/components/Navigation";
 
 export default function NewContactPage() {
   const router = useRouter();
@@ -30,6 +31,7 @@ export default function NewContactPage() {
 
   return (
     <ProtectedRoute>
+      <Navigation />
       <div className="container mx-auto py-8 px-4">
         <Card className="max-w-2xl mx-auto">
           <CardHeader>
