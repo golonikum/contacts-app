@@ -15,6 +15,7 @@ import { Trash2, ArrowLeft, Edit, Save, X } from "lucide-react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { getContactInitialFormValue } from "@/lib/contactHelpers";
 import { Navigation } from "@/components/Navigation";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 export default function ContactDetailPage() {
   const router = useRouter();
@@ -25,6 +26,7 @@ export default function ContactDetailPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const [formData, setFormData] = useState(getContactInitialFormValue());
 
@@ -71,14 +73,16 @@ export default function ContactDetailPage() {
   };
 
   const handleDelete = async () => {
-    if (confirm("Вы уверены, что хотите удалить этот контакт?")) {
-      try {
-        await deleteContact(contactId);
-        router.push("/contacts");
-      } catch (error) {
-        console.error("Error deleting contact:", error);
-        alert("Ошибка при удалении контакта");
-      }
+    setIsDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteContact(contactId);
+      router.push("/contacts");
+    } catch (error) {
+      console.error("Error deleting contact:", error);
+      alert("Ошибка при удалении контакта");
     }
   };
 
@@ -234,6 +238,17 @@ export default function ContactDetailPage() {
             )}
           </CardContent>
         </Card>
+
+        <ConfirmDialog
+          isOpen={isDeleteDialogOpen}
+          onClose={() => setIsDeleteDialogOpen(false)}
+          onConfirm={confirmDelete}
+          title="Удаление контакта"
+          description="Вы уверены, что хотите удалить этот контакт?"
+          confirmText="Удалить"
+          cancelText="Отмена"
+          variant="destructive"
+        />
       </div>
     </ProtectedRoute>
   );

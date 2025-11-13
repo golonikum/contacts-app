@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ContactName, ContactFormValue } from "@/types/contact";
 import { Plus, Trash2 } from "lucide-react";
+import { EventDialog } from "@/components/ui/EventDialog";
+import { useState } from "react";
 
 interface ContactFormProps {
   onSubmit: (data: ContactFormValue) => Promise<void>;
@@ -124,13 +126,6 @@ export function ContactForm({
     }));
   };
 
-  const addEventField = () => {
-    const key = prompt("Введите название события:");
-    if (key) {
-      handleEventChange(key, "");
-    }
-  };
-
   const removeEventField = (key: string) => {
     const newEvents = { ...formData.events };
     delete newEvents[key];
@@ -138,6 +133,16 @@ export function ContactForm({
       ...prev,
       events: newEvents,
     }));
+  };
+
+  const [isEventDialogOpen, setIsEventDialogOpen] = useState(false);
+
+  const addEventField = () => {
+    setIsEventDialogOpen(true);
+  };
+
+  const handleEventSubmit = (eventName: string) => {
+    handleEventChange(eventName, "");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -315,6 +320,12 @@ export function ContactForm({
           {isSubmitting ? "Сохранение..." : submitButtonText}
         </Button>
       )}
+
+      <EventDialog
+        isOpen={isEventDialogOpen}
+        onClose={() => setIsEventDialogOpen(false)}
+        onSubmit={handleEventSubmit}
+      />
     </form>
   );
 }
