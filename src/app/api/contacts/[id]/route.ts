@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { verifyToken } from "@/lib/auth";
+import { verifyTokenFromCookie } from "@/lib/serverAuth";
 
 // GET /api/contacts/[id] - Get a specific contact by ID
 export async function GET(
@@ -9,13 +9,8 @@ export async function GET(
 ) {
   try {
     // Verify user authentication
-    const token = request.headers.get("authorization")?.replace("Bearer ", "");
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const decoded = verifyToken(token);
-    if (!decoded) {
+    const user = await verifyTokenFromCookie();
+    if (!user) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
@@ -24,7 +19,7 @@ export async function GET(
     const contact = await prisma.contact.findFirst({
       where: {
         id,
-        userId: decoded.id,
+        userId: user.id,
       },
     });
 
@@ -49,13 +44,8 @@ export async function PUT(
 ) {
   try {
     // Verify user authentication
-    const token = request.headers.get("authorization")?.replace("Bearer ", "");
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const decoded = verifyToken(token);
-    if (!decoded) {
+    const user = await verifyTokenFromCookie();
+    if (!user) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
@@ -70,7 +60,7 @@ export async function PUT(
     const existingContact = await prisma.contact.findFirst({
       where: {
         id,
-        userId: decoded.id,
+        userId: user.id,
       },
     });
 
@@ -109,13 +99,8 @@ export async function DELETE(
 ) {
   try {
     // Verify user authentication
-    const token = request.headers.get("authorization")?.replace("Bearer ", "");
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const decoded = verifyToken(token);
-    if (!decoded) {
+    const user = await verifyTokenFromCookie();
+    if (!user) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
@@ -126,7 +111,7 @@ export async function DELETE(
     const existingContact = await prisma.contact.findFirst({
       where: {
         id,
-        userId: decoded.id,
+        userId: user.id,
       },
     });
 

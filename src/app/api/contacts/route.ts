@@ -1,25 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { verifyToken } from "@/lib/auth";
+import { verifyTokenFromCookie } from "@/lib/serverAuth";
 
 // GET /api/contacts - Get all contacts for the authenticated user
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Verify user authentication
-    const token = request.headers.get("authorization")?.replace("Bearer ", "");
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const decoded = verifyToken(token);
-    if (!decoded) {
+    const user = await verifyTokenFromCookie();
+    if (!user) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
     // Get all contacts for the user
     const contacts = await prisma.contact.findMany({
       where: {
-        userId: decoded.id,
+        userId: user.id,
       },
       orderBy: {
         updatedAt: "desc",
@@ -40,13 +35,8 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Verify user authentication
-    const token = request.headers.get("authorization")?.replace("Bearer ", "");
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const decoded = verifyToken(token);
-    if (!decoded) {
+    const user = await verifyTokenFromCookie();
+    if (!user) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
@@ -65,7 +55,7 @@ export async function POST(request: NextRequest) {
     // Create new contact
     const newContact = await prisma.contact.create({
       data: {
-        userId: decoded.id,
+        userId: user.id,
         name,
         address,
         group,
