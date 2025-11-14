@@ -13,9 +13,10 @@ interface CalendarDay {
 
 interface CalendarProps {
   year: number;
+  isMobile?: boolean;
 }
 
-export function Calendar({ year }: CalendarProps) {
+export function Calendar({ year, isMobile = false }: CalendarProps) {
   const [calendarDays, setCalendarDays] = useState<CalendarDay[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const currentDayRef = useRef<HTMLDivElement>(null);
@@ -84,12 +85,12 @@ export function Calendar({ year }: CalendarProps) {
   // Scroll to current day after loading
   useEffect(() => {
     if (!isLoading && currentDayRef.current && year === today.getFullYear()) {
-      currentDayRef.current.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'center' 
+      currentDayRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
       });
     }
-  }, [isLoading, year, today.getFullYear()]);
+  }, [isMobile, isLoading, year, today.getFullYear()]);
 
   const getDaysInMonth = (month: number) => {
     return calendarDays.filter((day) => day.date.getMonth() === month);
@@ -128,6 +129,52 @@ export function Calendar({ year }: CalendarProps) {
     );
   };
 
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString("ru-RU", {
+      day: "numeric",
+      month: "long",
+      weekday: "short",
+    });
+  };
+
+  // Mobile view - compact list
+  if (isMobile) {
+    return (
+      <div className="space-y-2">
+        {calendarDays.map((day, index) => (
+          <div
+            key={index}
+            ref={isToday(day.date) ? currentDayRef : null}
+            className={`border rounded-lg p-3 ${
+              isToday(day.date) ? "ring-2 ring-primary bg-primary/5" : ""
+            }`}
+          >
+            <div className="flex justify-between items-center mb-2">
+              <div className="font-medium">{formatDate(day.date)}</div>
+              <div className="text-sm text-muted-foreground">
+                {day.date.getDate()} {monthNames[day.date.getMonth()]}
+              </div>
+            </div>
+            {day.events.length > 0 && (
+              <div className="space-y-2">
+                {day.events.map((event, eventIndex) => (
+                  <div
+                    key={eventIndex}
+                    className="bg-primary/10 text-primary rounded p-2 text-sm"
+                  >
+                    <div className="font-medium">{event.contactName}</div>
+                    <div>{event.description}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Desktop view - grid calendar
   return (
     <div className="space-y-8">
       {monthNames.map((monthName, monthIndex) => {
@@ -186,4 +233,3 @@ export function Calendar({ year }: CalendarProps) {
     </div>
   );
 }
-
