@@ -4,16 +4,27 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Contact } from "@/types/contact";
 import { getAllContacts } from "@/services/contactService";
-import { Plus, Phone, Mail, MapPin, Download, Upload } from "lucide-react";
+import {
+  Plus,
+  Phone,
+  Mail,
+  MapPin,
+  Download,
+  Upload,
+  Search,
+} from "lucide-react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Navigation } from "@/components/Navigation";
 import { Toast } from "@/components/ui/toast";
 
 export default function ContactsPage() {
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const [toast, setToast] = useState<{
     message: string;
     isVisible: boolean;
@@ -41,6 +52,7 @@ export default function ContactsPage() {
       try {
         const data = await getAllContacts();
         setContacts(data);
+        setFilteredContacts(data);
       } catch (error) {
         console.error("Error fetching contacts:", error);
       } finally {
@@ -50,6 +62,25 @@ export default function ContactsPage() {
 
     fetchContacts();
   }, []);
+
+  // Filter contacts based on search query
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setFilteredContacts(contacts);
+      return;
+    }
+
+    const query = searchQuery.toLowerCase();
+    const filtered = contacts.filter(
+      (contact) =>
+        contact.name.firstName.toLowerCase().includes(query) ||
+        contact.name.lastName.toLowerCase().includes(query) ||
+        (contact.name.middleName &&
+          contact.name.middleName.toLowerCase().includes(query)) ||
+        (contact.group && contact.group.toLowerCase().includes(query))
+    );
+    setFilteredContacts(filtered);
+  }, [searchQuery, contacts]);
 
   const exportContacts = () => {
     // Transform contacts to the required format
@@ -167,6 +198,7 @@ export default function ContactsPage() {
             // Refresh the contacts list
             const updatedContacts = await getAllContacts();
             setContacts(updatedContacts);
+            setFilteredContacts(updatedContacts);
             showToast(
               `Успешно импортировано ${contactsToImport.length} контактов`,
               "success"
@@ -204,59 +236,78 @@ export default function ContactsPage() {
     <>
       <ProtectedRoute>
         <Navigation />
-        <div className="container mx-auto py-8 px-4">
+        <div className="container mx-auto pt-24 px-4 pb-8">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold">Контакты</h1>
-            <div className="flex gap-2">
-              <div className="relative">
-                <input
-                  type="file"
-                  accept=".json"
-                  onChange={importContacts}
-                  className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
-                  id="import-input"
-                />
-                <Button variant="outline" asChild>
-                  <label
-                    htmlFor="import-input"
-                    className="cursor-pointer flex items-center"
-                  >
-                    <Upload className="h-4 w-4 mr-2" />
-                    Импорт
-                  </label>
-                </Button>
-              </div>
-              <Button onClick={exportContacts} variant="outline">
-                <Download className="h-4 w-4 mr-2" />
-                Экспорт
+          </div>
+
+          <div className="flex gap-2 mb-6">
+            <div className="relative">
+              <input
+                type="file"
+                accept=".json"
+                onChange={importContacts}
+                className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                id="import-input"
+              />
+              <Button variant="outline" asChild>
+                <label
+                  htmlFor="import-input"
+                  className="cursor-pointer flex items-center"
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Импорт
+                </label>
               </Button>
-              <Button onClick={() => router.push("/contacts/new")}>
-                <Plus className="h-4 w-4 mr-2" />
-                Добавить контакт
-              </Button>
+            </div>
+            <Button onClick={exportContacts} variant="outline">
+              <Download className="h-4 w-4 mr-2" />
+              Экспорт
+            </Button>
+            <Button onClick={() => router.push("/contacts/new")}>
+              <Plus className="h-4 w-4 mr-2" />
+              Добавить контакт
+            </Button>
+          </div>
+
+          {/* Search bar */}
+          <div className="mb-6">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Поиск по имени, фамилии или группе..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
             </div>
           </div>
 
-          {contacts.length === 0 ? (
+          {filteredContacts.length === 0 ? (
             <Card>
               <CardContent className="pt-6">
                 <div className="text-center py-8">
                   <p className="text-muted-foreground mb-4">
-                    У вас пока нет контактов
+                    {searchQuery
+                      ? "Контакты не найдены"
+                      : "У вас пока нет контактов"}
                   </p>
-                  <Button onClick={() => router.push("/contacts/new")}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Добавить первый контакт
-                  </Button>
+                  {!searchQuery && (
+                    <Button onClick={() => router.push("/contacts/new")}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Добавить первый контакт
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
           ) : (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {contacts.map((contact) => (
+              {filteredContacts.map((contact) => (
                 <Card
                   key={contact.id}
                   className="hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => router.push(`/contacts/${contact.id}`)}
                 >
                   <CardHeader>
                     <CardTitle>
@@ -309,7 +360,10 @@ export default function ContactsPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => router.push(`/contacts/${contact.id}`)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/contacts/${contact.id}`);
+                        }}
                       >
                         Подробнее
                       </Button>

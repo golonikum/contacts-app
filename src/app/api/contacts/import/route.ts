@@ -7,10 +7,7 @@ export async function POST(request: NextRequest) {
     // Verify user is authenticated
     const user = await verifyTokenFromCookie();
     if (!user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const contacts = await request.json();
@@ -32,7 +29,8 @@ export async function POST(request: NextRequest) {
             address: contact.address,
             group: contact.group,
             events: contact.events || {},
-            contacts: contact.contacts,
+            // TODO
+            contacts: { phones: [], emails: [] },
           },
         });
       })

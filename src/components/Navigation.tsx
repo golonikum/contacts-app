@@ -15,7 +15,7 @@ export function Navigation() {
   const { logout, user } = useAuth();
 
   return (
-    <nav className="border-b">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex space-x-8">
@@ -35,11 +35,11 @@ export function Navigation() {
             ))}
           </div>
           <div className="flex h-16 items-center space-x-4">
-            <ThemeToggle />
             <span className="text-sm">{user?.email}</span>
             <Button onClick={() => logout()} variant="outline">
               Выйти
             </Button>
+            <ThemeToggle />
           </div>
         </div>
       </div>

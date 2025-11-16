@@ -1,5 +1,4 @@
 import { getAllContacts } from "@/services/contactService";
-import { Contact } from "@/types/contact";
 import { useEffect, useState, useRef } from "react";
 
 interface CalendarDay {
@@ -132,8 +131,7 @@ export function Calendar({ year, isMobile = false }: CalendarProps) {
   const formatDate = (date: Date) => {
     return date.toLocaleDateString("ru-RU", {
       day: "numeric",
-      month: "long",
-      weekday: "short",
+      weekday: "long",
     });
   };
 
@@ -150,9 +148,16 @@ export function Calendar({ year, isMobile = false }: CalendarProps) {
             }`}
           >
             <div className="flex justify-between items-center mb-2">
-              <div className="font-medium">{formatDate(day.date)}</div>
+              <div className="font-medium">
+                {formatDate(day.date)
+                  .split("")
+                  .map((char, index) =>
+                    index === 0 ? char.toUpperCase() : char
+                  )
+                  .join("")}
+              </div>
               <div className="text-sm text-muted-foreground">
-                {day.date.getDate()} {monthNames[day.date.getMonth()]}
+                {monthNames[day.date.getMonth()]}
               </div>
             </div>
             {day.events.length > 0 && (
