@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Worker Reset</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .button {
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+    .info {
+      background-color: #f0f0f0;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    .log {
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-top: 20px;
+      height: 200px;
+      overflow-y: auto;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>Сброс Service Worker</h1>
+
+  <p>Эта страница поможет сбросить service worker и очистить кэш для исправления проблем с PWA.</p>
+
+  <button id="reset-button" class="button">Сбросить Service Worker</button>
+
+  <div class="info">
+    <h3>Инструкции:</h3>
+    <ol>
+      <li>Нажмите кнопку "Сбросить Service Worker"</li>
+      <li>Дождитесь завершения процесса</li>
+      <li>Страница автоматически перезагрузится</li>
+      <li>Переустановите PWA из браузера</li>
+    </ol>
+  </div>
+
+  <div id="log" class="log"></div>
+
+  <script>
+    const resetButton = document.getElementById('reset-button');
+    const logElement = document.getElementById('log');
+
+    function log(message) {
+      logElement.textContent += message + '\n';
+      console.log(message);
+    }
+
+    resetButton.addEventListener('click', () => {
+      resetButton.disabled = true;
+      log('Начинаем сброс service worker...');
+
+      // 1. Unregister all service workers
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        log(`Найдено service workers: ${registrations.length}`);
+
+        const unregisterPromises = registrations.map(registration => {
+          log(`Удаляем service worker: ${registration.scope}`);
+          return registration.unregister();
+        });
+
+        return Promise.all(unregisterPromises);
+      }).then(function() {
+        log('Все service workers удалены');
+
+        // 2. Clear all caches
+        return caches.keys().then(function(cacheNames) {
+          log(`Найдено кэшей: ${cacheNames.length}`);
+
+          const deletePromises = cacheNames.map(function(cacheName) {
+            log(`Удаляем кэш: ${cacheName}`);
+            return caches.delete(cacheName);
+          });
+
+          return Promise.all(deletePromises);
+        });
+      }).then(function() {
+        log('Все кэши очищены');
+        log('Перезагрузка страницы через 3 секунды...');
+
+        // 3. Reload the page
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      }).catch(function(error) {
+        log(`Ошибка: ${error.message}`);
+        resetButton.disabled = false;
+      });
+    });
+  </script>
+</body>
+</html>
