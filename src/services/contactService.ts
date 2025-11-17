@@ -91,3 +91,17 @@ export const deleteContact = async (id: string): Promise<void> => {
     throw new Error("Failed to delete contact");
   }
 };
+
+// Delete all contacts for the current user (server-side only)
+export const deleteAllContactsForUser = async (): Promise<void> => {
+  // This function should only be called from server-side code
+  // It will use server-side authentication
+  const response = await fetch(`${API_URL}/delete-all`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to delete all contacts");
+  }
+};

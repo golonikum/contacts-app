@@ -15,17 +15,20 @@ import {
   Download,
   Upload,
   Search,
+  Trash2,
 } from "lucide-react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Navigation } from "@/components/Navigation";
 import { Toast } from "@/components/ui/toast";
 import { Loader } from "@/components/Loader";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 export default function ContactsPage() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
   const [toast, setToast] = useState<{
     message: string;
     isVisible: boolean;
@@ -35,6 +38,7 @@ export default function ContactsPage() {
     isVisible: false,
     type: "success",
   });
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const router = useRouter();
 
   const showToast = (
@@ -149,6 +153,29 @@ export default function ContactsPage() {
     linkElement.click();
   };
 
+  const deleteAllContacts = async () => {
+    setIsDeleting(true);
+    try {
+      const response = await fetch("/api/contacts/delete-all", {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setContacts([]);
+        setFilteredContacts([]);
+        showToast("Все контакты успешно удалены", "success");
+      } else {
+        const errorData = await response.json();
+        showToast(`Ошибка при удалении: ${errorData.error}`, "error");
+      }
+    } catch (error) {
+      console.error("Error deleting all contacts:", error);
+      showToast("Произошла ошибка при удалении контактов", "error");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const importContacts = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -238,7 +265,7 @@ export default function ContactsPage() {
             <h1 className="text-3xl font-bold">Контакты</h1>
           </div>
 
-          <div className="flex gap-2 mb-6">
+          <div className="flex flex-wrap gap-2 mb-6">
             <div className="relative">
               <input
                 type="file"
@@ -261,6 +288,16 @@ export default function ContactsPage() {
               <Download className="h-4 w-4 mr-2" />
               Экспорт
             </Button>
+            {contacts.length > 0 && (
+              <Button
+                onClick={() => setIsDeleteDialogOpen(true)}
+                variant="outline"
+                disabled={isDeleting}
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                {isDeleting ? "Удаление..." : "Удалить все"}
+              </Button>
+            )}
             <Button onClick={() => router.push("/contacts/new")}>
               <Plus className="h-4 w-4 mr-2" />
               Добавить
@@ -379,6 +416,17 @@ export default function ContactsPage() {
         isVisible={toast.isVisible}
         onClose={() => setToast((prev) => ({ ...prev, isVisible: false }))}
         type={toast.type}
+      />
+
+      <ConfirmDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={deleteAllContacts}
+        title="Удаление всех контактов"
+        description="Вы уверены, что хотите удалить все контакты? Это действие нельзя отменить."
+        confirmText="Удалить"
+        cancelText="Отмена"
+        variant="destructive"
       />
     </>
   );
