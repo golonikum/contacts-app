@@ -1,36 +1,136 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Contacts App
 
-## Getting Started
+Приложение для управления контактами с возможностью отслеживания событий и отправки уведомлений по email.
 
-First, run the development server:
+## Возможности
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- 📱 Управление контактами с полной информацией (имя, группа, адрес, телефоны, email)
+- 📅 Отслеживание важных событий (дни рождения, праздники и т.д.)
+- 🔍 Поиск контактов по имени
+- 📥 Импорт/экспорт контактов в формате JSON
+- 🔐 Аутентификация пользователей
+- 📨 Email-уведомления через сервис Resend
+
+## Технологический стек
+
+- **Frontend:** Next.js, React, TypeScript, Tailwind CSS
+- **Backend:** Next.js API Routes
+- **База данных:** PostgreSQL с Prisma ORM
+- **Аутентификация:** JWT токены
+- **Email сервис:** Resend
+- **Хостинг:** Vercel (рекомендуется)
+
+## Установка и запуск
+
+### Требования
+
+- Node.js 18.0+
+- PostgreSQL база данных
+- Аккаунт Resend для отправки email
+
+### Настройка
+
+1. Клонируйте репозиторий:
+
+   ```bash
+   git clone https://github.com/yourusername/contacts-app.git
+   cd contacts-app
+   ```
+
+2. Установите зависимости:
+
+   ```bash
+   npm install
+   ```
+
+3. Создайте файл `.env.local` и добавьте переменные окружения:
+
+   ```env
+   # База данных
+   DATABASE_URL="postgresql://username:password@localhost:5432/contacts_db"
+
+   # JWT секретный ключ
+   JWT_SECRET="your_jwt_secret_key_here"
+
+   # Resend конфигурация
+   RESEND_API_KEY="your_resend_api_key_here"
+   RESEND_FROM_EMAIL="your_verified_domain@yourdomain.com"
+
+   # Cron API ключ для аутентификации
+   CRON_API_KEY="your_secure_api_key_here"
+   ```
+
+4. Настройте базу данных:
+
+   ```bash
+   npx prisma migrate dev
+   npx prisma generate
+   ```
+
+5. Запустите приложение:
+   ```bash
+   npm run dev
+   ```
+
+Приложение будет доступно по адресу http://localhost:3000
+
+## Настройка еженедельной рассылки
+
+Для настройки еженедельной рассылки уведомлений о предстоящих событиях:
+
+1. Зарегистрируйтесь в [Resend](https://resend.com)
+2. Подтвердите свой домен в панели Resend
+3. Добавьте переменные окружения `RESEND_API_KEY` и `RESEND_FROM_EMAIL`
+4. Настройте cron job для вызова эндпоинта `/api/cron/weekly-events?apiKey=YOUR_CRON_API_KEY`
+
+Подробная инструкция по настройке cron job доступна в файле [CRON_SETUP.md](./CRON_SETUP.md).
+
+## Структура проекта
+
+```
+src/
+├── app/                # Next.js App Router
+│   ├── api/            # API эндпоинты
+│   │   ├── auth/       # Аутентификация
+│   │   ├── contacts/   # Управление контактами
+│   │   └── cron/       # Cron задачи
+│   ├── events/         # Страница событий
+│   └── contacts/       # Страница контактов
+├── components/         # React компоненты
+├── lib/                # Утилиты и конфигурации
+├── services/           # Бизнес-логика
+└── types/              # TypeScript типы
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## API документация
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Аутентификация
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `POST /api/auth/login` - Вход пользователя
+- `POST /api/auth/register` - Регистрация пользователя
 
-## Learn More
+### Управление контактами
 
-To learn more about Next.js, take a look at the following resources:
+- `GET /api/contacts` - Получение всех контактов пользователя
+- `POST /api/contacts` - Создание нового контакта
+- `GET /api/contacts/[id]` - Получение контакта по ID
+- `PUT /api/contacts/[id]` - Обновление контакта
+- `DELETE /api/contacts/[id]` - Удаление контакта
+- `DELETE /api/contacts/delete-all` - Удаление всех контактов
+- `POST /api/contacts/import` - Импорт контактов
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Cron задачи
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `GET /api/cron/weekly-events` - Рассылка событий
 
-## Deploy on Vercel
+## Вклад в проект
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Форкните репозиторий
+2. Создайте ветку для вашей функции (`git checkout -b feature/AmazingFeature`)
+3. Закоммитьте ваши изменения (`git commit -m 'Add some AmazingFeature'`)
+4. Отправьте в репозиторий (`git push origin feature/AmazingFeature`)
+5. Откройте Pull Request
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Лицензия
+
+Этот проект распространяется под лицензией MIT. Подробности в файле [LICENSE](LICENSE.md).
