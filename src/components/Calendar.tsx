@@ -1,3 +1,4 @@
+import { formatYearsInRussian } from "@/lib/formatYearsInRussian";
 import { getAllContacts } from "@/services/contactService";
 import { useEffect, useState, useRef } from "react";
 
@@ -49,11 +50,13 @@ export function Calendar({ year, isMobile = false }: CalendarProps) {
             Object.entries(contact.events).forEach(([description, dateStr]) => {
               // Parse date in DD.MM.YYYY format
               const [eventDay, month, yearFromEvent] = dateStr.split(".");
+              const eventYear = yearFromEvent ? parseInt(yearFromEvent) : year;
               const eventDate = new Date(
-                yearFromEvent ? parseInt(yearFromEvent) : year,
+                eventYear,
                 parseInt(month) - 1,
                 parseInt(eventDay)
               );
+              const howManyYears = year - eventYear;
 
               if (!isNaN(eventDate.valueOf())) {
                 const dateKey = eventDate.toISOString().split("T")[0].slice(5);
@@ -62,7 +65,11 @@ export function Calendar({ year, isMobile = false }: CalendarProps) {
                   day.events.push({
                     contactId: contact.id,
                     contactName: `${contact.name.firstName} ${contact.name.lastName}`,
-                    description,
+                    description: `${description}${
+                      howManyYears
+                        ? ` (${formatYearsInRussian(howManyYears)})`
+                        : ""
+                    }`,
                   });
                 }
               }

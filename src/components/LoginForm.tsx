@@ -15,7 +15,14 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
+
+  // Check if user is already logged in
+  useEffect(() => {
+    if (user) {
+      router.push("/main");
+    }
+  }, [router, user]);
 
   // Check if user is already logged in
   useEffect(() => {
@@ -24,7 +31,7 @@ export default function LoginForm() {
     if (message) {
       setError(message);
     }
-  }, [router, searchParams]);
+  }, [searchParams]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -58,7 +65,7 @@ export default function LoginForm() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md p-8">
         <CardHeader>
           <CardTitle className="text-center">Вход</CardTitle>
         </CardHeader>

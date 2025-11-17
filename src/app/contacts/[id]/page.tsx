@@ -16,6 +16,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { getContactInitialFormValue } from "@/lib/contactHelpers";
 import { Navigation } from "@/components/Navigation";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { Loader } from "@/components/Loader";
 
 export default function ContactDetailPage() {
   const router = useRouter();
@@ -87,11 +88,7 @@ export default function ContactDetailPage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="container mx-auto py-8 px-4">
-        <div className="text-center">Загрузка...</div>
-      </div>
-    );
+    return <Loader />;
   }
 
   if (!contact) {
@@ -105,7 +102,7 @@ export default function ContactDetailPage() {
   return (
     <ProtectedRoute>
       <Navigation />
-      <div className="container mx-auto py-8 px-4">
+      <div className="container mx-auto pt-24 px-4 pb-8">
         <div className="mb-6">
           <Button
             variant="outline"
@@ -119,9 +116,7 @@ export default function ContactDetailPage() {
 
         <Card className="max-w-2xl mx-auto">
           <CardHeader className="flex flex-row justify-between items-center">
-            <CardTitle className="text-2xl">
-              {isEditing ? "Редактирование контакта" : "Детали контакта"}
-            </CardTitle>
+            <CardTitle className="text-2xl"></CardTitle>
             <div className="flex gap-2">
               {isEditing ? (
                 <>
@@ -167,8 +162,8 @@ export default function ContactDetailPage() {
                 <div>
                   <h3 className="text-lg font-medium mb-2">Имя</h3>
                   <p className="text-xl">
-                    {contact.name.firstName} {contact.name.lastName}
-                    {contact.name.middleName && ` ${contact.name.middleName}`}
+                    {contact.name.lastName} {contact.name.firstName}{" "}
+                    {contact.name.middleName}
                   </p>
                   {contact.name.dignity && (
                     <p className="text-muted-foreground">

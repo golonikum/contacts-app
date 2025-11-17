@@ -1,11 +1,12 @@
 import { Contact, ContactFormValue } from "@/types/contact";
 import { parseContact } from "@/lib/contactHelpers";
+import { getCookie } from "@/lib/clientCookies";
 
 const API_URL = "/api/contacts";
 
 // Get authorization header
 const getAuthHeaders = () => {
-  const token = localStorage.getItem("token");
+  const token = getCookie("token");
   return {
     "Content-Type": "application/json",
     Authorization: `Bearer ${token}`,

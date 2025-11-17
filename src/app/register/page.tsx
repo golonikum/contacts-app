@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -14,14 +15,14 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { user } = useAuth();
 
   // Check if user is already logged in
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
+    if (user) {
       router.push("/main");
     }
-  }, [router]);
+  }, [router, user]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -61,7 +62,7 @@ export default function RegisterPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md p-8">
         <CardHeader>
           <CardTitle className="text-center">Регистрация</CardTitle>
         </CardHeader>

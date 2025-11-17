@@ -3,6 +3,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Loader } from "./Loader";
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -15,11 +16,7 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }, [user, isLoading, router]);
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="text-lg">Загрузка...</div>
-      </div>
-    );
+    return <Loader />;
   }
 
   if (!user) {

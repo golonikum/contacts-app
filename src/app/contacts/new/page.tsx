@@ -32,7 +32,7 @@ export default function NewContactPage() {
   return (
     <ProtectedRoute>
       <Navigation />
-      <div className="container mx-auto py-8 px-4">
+      <div className="container mx-auto pt-24 px-4 pb-8">
         <Card className="max-w-2xl mx-auto">
           <CardHeader>
             <CardTitle className="text-2xl">Новый контакт</CardTitle>

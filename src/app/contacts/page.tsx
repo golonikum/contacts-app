@@ -19,6 +19,7 @@ import {
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Navigation } from "@/components/Navigation";
 import { Toast } from "@/components/ui/toast";
+import { Loader } from "@/components/Loader";
 
 export default function ContactsPage() {
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -225,11 +226,7 @@ export default function ContactsPage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="container mx-auto py-8 px-4">
-        <div className="text-center">Загрузка...</div>
-      </div>
-    );
+    return <Loader />;
   }
 
   return (
@@ -266,7 +263,7 @@ export default function ContactsPage() {
             </Button>
             <Button onClick={() => router.push("/contacts/new")}>
               <Plus className="h-4 w-4 mr-2" />
-              Добавить контакт
+              Добавить
             </Button>
           </div>
 
@@ -311,7 +308,8 @@ export default function ContactsPage() {
                 >
                   <CardHeader>
                     <CardTitle>
-                      {contact.name.firstName} {contact.name.lastName}
+                      {contact.name.lastName} {contact.name.firstName}{" "}
+                      {contact.name.middleName}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
