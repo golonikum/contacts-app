@@ -105,7 +105,7 @@ export async function GET(req: NextRequest) {
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Acme <onboarding@resend.dev>",
+        from: process.env.RESEND_FROM_EMAIL || "Acme <onboarding@resend.dev>",
         to: ["goloniko@gmail.com"],
         subject: `Предстоящие события (${upcomingEvents.length})`,
         html: emailContent,
