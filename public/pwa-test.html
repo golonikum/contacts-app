@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWA Installation Test</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#000000">
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .install-button {
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+    .install-button:disabled {
+      background-color: #a0a0a0;
+      cursor: not-allowed;
+    }
+    .info {
+      background-color: #f0f0f0;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>PWA Installation Test</h1>
+
+  <p>This page tests the PWA installation for Contacts App.</p>
+
+  <button id="install-button" class="install-button" disabled>Установить приложение</button>
+
+  <div class="info">
+    <h3>Информация о PWA:</h3>
+    <ul>
+      <li>Service Worker: <span id="sw-status">Проверка...</span></li>
+      <li>Manifest: <span id="manifest-status">Проверка...</span></li>
+      <li>HTTPS: <span id="https-status">Проверка...</span></li>
+    </ul>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check HTTPS
+      const httpsStatus = document.getElementById('https-status');
+      httpsStatus.textContent = location.protocol === 'https:' || location.hostname === 'localhost' 
+        ? '✅ OK' 
+        : '❌ Необходимо HTTPS для установки PWA';
+
+      // Check Manifest
+      const manifestStatus = document.getElementById('manifest-status');
+      fetch('/manifest.json')
+        .then(response => {
+          manifestStatus.textContent = response.ok ? '✅ OK' : '❌ Ошибка';
+          return response.json();
+        })
+        .catch(() => {
+          manifestStatus.textContent = '❌ Ошибка';
+        });
+
+      // Check Service Worker
+      const swStatus = document.getElementById('sw-status');
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            swStatus.textContent = '✅ OK';
+            console.log('Service Worker registered:', registration);
+          })
+          .catch(error => {
+            swStatus.textContent = '❌ Ошибка';
+            console.error('Service Worker registration failed:', error);
+          });
+      } else {
+        swStatus.textContent = '❌ Не поддерживается браузером';
+      }
+
+      // PWA Installation
+      const installButton = document.getElementById('install-button');
+      let deferredPrompt;
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installButton.disabled = false;
+
+        installButton.addEventListener('click', () => {
+          if (!deferredPrompt) return;
+
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('Пользователь установил PWA');
+            } else {
+              console.log('Пользователь отклонил установку PWA');
+            }
+            deferredPrompt = null;
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>

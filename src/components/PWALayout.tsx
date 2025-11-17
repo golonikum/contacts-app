@@ -10,19 +10,33 @@ export default function PWALayout({
   useEffect(() => {
     // Register service worker
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("/sw.js")
-          .then((registration) => {
-            console.log("Service Worker registered: ", registration);
-          })
-          .catch((registrationError) => {
-            console.log(
-              "Service Worker registration failed: ",
-              registrationError
-            );
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then((registration) => {
+          console.log("Service Worker registered: ", registration);
+          
+          // Check for service worker updates
+          registration.addEventListener("updatefound", () => {
+            const installingWorker = registration.installing;
+            if (installingWorker) {
+              installingWorker.addEventListener("statechange", () => {
+                if (installingWorker.state === "installed" && navigator.serviceWorker.controller) {
+                  // New content is available; refresh to get it
+                  console.log("New content available, refreshing");
+                  window.location.reload();
+                }
+              });
+            }
           });
-      });
+        })
+        .catch((registrationError) => {
+          console.error(
+            "Service Worker registration failed: ",
+            registrationError
+          );
+        });
+    } else {
+      console.error("Service workers are not supported in this browser");
     }
 
     // Add to home screen prompt
