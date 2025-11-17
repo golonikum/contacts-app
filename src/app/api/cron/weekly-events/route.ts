@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
 
     // Get all contacts for the user
     const contacts = await prisma.contact.findMany({
-      // TODO: store USER_UI in env
+      // TODO: делать рассылку для всех пользователей
       // where: {
       //   userId: user.id,
       // },

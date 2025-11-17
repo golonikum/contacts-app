@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
             address: contact.address,
             group: contact.group,
             events: contact.events || {},
-            // TODO
+            // TODO: пока убрал контакты для безопасности
             contacts: { phones: [], emails: [] },
           },
         });
