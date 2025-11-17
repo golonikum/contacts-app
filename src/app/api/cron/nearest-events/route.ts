@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 import { Contact } from "@/types/contact";
 import { formatYearsInRussian } from "@/lib/formatYearsInRussian";
 
-// This endpoint should be called by a cron job weekly
+// This endpoint should be called by a cron job
 export async function GET(req: NextRequest) {
   try {
     if (
@@ -118,9 +118,9 @@ export async function GET(req: NextRequest) {
       eventsCount: upcomingEvents.length,
     });
   } catch (error) {
-    console.error("Error in weekly events cron:", error);
+    console.error("Error in nearest events cron:", error);
     return NextResponse.json(
-      { error: "Failed to process weekly events" },
+      { error: "Failed to process nearest events" },
       { status: 500 }
     );
   }

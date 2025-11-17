@@ -81,7 +81,7 @@
 1. Зарегистрируйтесь в [Resend](https://resend.com)
 2. Подтвердите свой домен в панели Resend
 3. Добавьте переменные окружения `RESEND_API_KEY` и `RESEND_FROM_EMAIL`
-4. Настройте cron job для вызова эндпоинта `/api/cron/weekly-events`
+4. Настройте cron job для вызова эндпоинта `/api/cron/nearest-events`
 
 ## Структура проекта
 
@@ -119,7 +119,7 @@ src/
 
 ### Cron задачи
 
-- `GET /api/cron/weekly-events` - Рассылка событий
+- `GET /api/cron/nearest-events` - Рассылка ближайших событий
 
 ## Вклад в проект
 
