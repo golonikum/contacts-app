@@ -150,11 +150,11 @@ export function Calendar({ year, isMobile = false }: CalendarProps) {
           <div
             key={index}
             ref={isToday(day.date) ? currentDayRef : null}
-            className={`border rounded-lg p-3 ${
+            className={`flex flex-col gap-2 border rounded-lg p-3 ${
               isToday(day.date) ? "ring-2 ring-primary bg-primary/5" : ""
             }`}
           >
-            <div className="flex justify-between items-center mb-2">
+            <div className="flex justify-between items-center">
               <div className="font-medium">
                 {formatDate(day.date)
                   .split("")

@@ -36,7 +36,6 @@ export function Navigation() {
             ))}
           </div>
           <div className="flex h-16 items-center space-x-4">
-            <span className="text-sm">{user?.email}</span>
             <Button onClick={() => logout()} variant="outline">
               Выйти
             </Button>
