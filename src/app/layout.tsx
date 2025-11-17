@@ -4,6 +4,7 @@ import "./globals.css";
 import { Suspense } from "react";
 import { AuthContextProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import PWALayout from "@/components/PWALayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,7 +18,28 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Contacts App",
-  description: "Created with assistance of AI",
+  description: "Приложение для управления контактами с возможностью отслеживания событий",
+  manifest: "/manifest.json",
+  themeColor: "#000000",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Contacts",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Contacts App",
+    title: "Contacts App",
+    description: "Приложение для управления контактами с возможностью отслеживания событий",
+  },
+  twitter: {
+    card: "summary",
+    title: "Contacts App",
+    description: "Приложение для управления контактами с возможностью отслеживания событий",
+  },
 };
 
 export default function RootLayout({
@@ -37,7 +59,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthContextProvider>
-            <Suspense>{children}</Suspense>
+            <PWALayout>
+              <Suspense>{children}</Suspense>
+            </PWALayout>
           </AuthContextProvider>
         </ThemeProvider>
       </body>

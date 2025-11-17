@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 
 const navItems = [
   { href: "/contacts", label: "Контакты" },
@@ -43,6 +44,7 @@ export function Navigation() {
           </div>
         </div>
       </div>
+      <PWAInstallPrompt />
     </nav>
   );
 }
