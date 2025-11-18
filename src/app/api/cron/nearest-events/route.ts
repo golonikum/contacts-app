@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
     const upcomingEvents: Array<{
       contactName: string;
       eventDate: Date;
-      dateStr: string;
+      shortDateStr: string;
       eventDescription: string;
     }> = [];
 
@@ -53,7 +53,11 @@ export async function GET(req: NextRequest) {
               contactName: `${contact.name.lastName} ${
                 contact.name.firstName
               } ${contact.name.middleName || ""}`,
-              dateStr: dateStr,
+              shortDateStr: `${day}.${month} ${eventDate
+                .toLocaleDateString("ru-RU", {
+                  weekday: "long",
+                })
+                .toUpperCase()}`,
               eventDate,
               eventDescription: `${description}${
                 howManyYears ? ` (${formatYearsInRussian(howManyYears)})` : ""
@@ -81,7 +85,7 @@ export async function GET(req: NextRequest) {
     const eventsList = upcomingEvents
       .map(
         (event) =>
-          `<li><strong>${event.dateStr}</strong>: ${event.contactName}, ${event.eventDescription}</li>`
+          `<li><strong>${event.shortDateStr}</strong>: ${event.contactName}, ${event.eventDescription}</li>`
       )
       .join("");
 
