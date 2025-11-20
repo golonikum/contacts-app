@@ -113,12 +113,25 @@ class EventManager {
       (event) => event.date >= today && event.date <= nextTwoWeeks
     );
 
-    console.log(upcomingEvents);
+    console.log("Upcoming events for notification:", upcomingEvents);
 
     // Show notifications for upcoming events
     upcomingEvents.forEach((event) => {
       this.showEventNotification(event);
     });
+  }
+
+  // Test function to trigger a notification immediately
+  testNotification(): void {
+    const testEvent: Event = {
+      id: "test-" + Date.now(),
+      title: "Тестовое уведомление",
+      description: "Это тестовое уведомление для проверки работы системы",
+      date: new Date(),
+      type: EventType.REMINDER,
+    };
+
+    this.showEventNotification(testEvent);
   }
 
   // Show notification for an event
