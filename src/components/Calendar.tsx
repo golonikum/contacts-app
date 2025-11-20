@@ -1,4 +1,7 @@
-import { formatYearsInRussian } from "@/lib/formatYearsInRussian";
+import {
+  formatEventDescription,
+  getContactNameForEvent,
+} from "@/lib/contactHelpers";
 import { getAllContacts } from "@/services/contactService";
 import { useEffect, useState, useRef } from "react";
 
@@ -64,12 +67,11 @@ export function Calendar({ year, isMobile = false }: CalendarProps) {
                 if (day) {
                   day.events.push({
                     contactId: contact.id,
-                    contactName: `${contact.name.firstName} ${contact.name.lastName}`,
-                    description: `${description}${
-                      howManyYears
-                        ? ` (${formatYearsInRussian(howManyYears)})`
-                        : ""
-                    }`,
+                    contactName: getContactNameForEvent(contact),
+                    description: formatEventDescription({
+                      description,
+                      howManyYears,
+                    }),
                   });
                 }
               }

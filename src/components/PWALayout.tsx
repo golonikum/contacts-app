@@ -1,26 +1,42 @@
 "use client";
 
+import { getNearestEvents } from "@/lib/contactHelpers";
+import { getAllContacts } from "@/services/contactService";
+import eventManager from "@/services/eventManager";
 import { useEffect } from "react";
 
-export default function PWALayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function PWALayout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
+    (async () => {
+      const contacts = await getAllContacts();
+      const { allEvents } = getNearestEvents(contacts);
+
+      eventManager.resetEvents(
+        allEvents.map((item) => ({
+          date: item.eventDate,
+          title: item.eventDescription,
+          contactName: item.contactName,
+          description: item.eventDescription,
+        }))
+      );
+    })();
+
     // Register service worker
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/sw-new.js")
         .then((registration) => {
           console.log("Service Worker registered: ", registration);
-          
+
           // Check for service worker updates
           registration.addEventListener("updatefound", () => {
             const installingWorker = registration.installing;
             if (installingWorker) {
               installingWorker.addEventListener("statechange", () => {
-                if (installingWorker.state === "installed" && navigator.serviceWorker.controller) {
+                if (
+                  installingWorker.state === "installed" &&
+                  navigator.serviceWorker.controller
+                ) {
                   // New content is available; refresh to get it
                   console.log("New content available, refreshing");
                   window.location.reload();

@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { AuthContextProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import PWALayout from "@/components/PWALayout";
+import NotificationPermission from "@/components/NotificationPermission";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,7 +19,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Contacts App",
-  description: "Приложение для управления контактами с возможностью отслеживания событий",
+  description:
+    "Приложение для управления контактами с возможностью отслеживания событий",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -30,9 +32,7 @@ export const metadata: Metadata = {
       { url: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
       { url: "/icon-512x512.png", sizes: "512x512", type: "image/png" },
     ],
-    apple: [
-      { url: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
-    ],
+    apple: [{ url: "/icon-192x192.png", sizes: "192x192", type: "image/png" }],
   },
   formatDetection: {
     telephone: false,
@@ -41,12 +41,14 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Contacts App",
     title: "Contacts App",
-    description: "Приложение для управления контактами с возможностью отслеживания событий",
+    description:
+      "Приложение для управления контактами с возможностью отслеживания событий",
   },
   twitter: {
     card: "summary",
     title: "Contacts App",
-    description: "Приложение для управления контактами с возможностью отслеживания событий",
+    description:
+      "Приложение для управления контактами с возможностью отслеживания событий",
   },
 };
 
@@ -73,6 +75,7 @@ export default function RootLayout({
           <AuthContextProvider>
             <PWALayout>
               <Suspense>{children}</Suspense>
+              <NotificationPermission />
             </PWALayout>
           </AuthContextProvider>
         </ThemeProvider>

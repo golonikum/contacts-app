@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { Contact } from "@/types/contact";
-import { formatYearsInRussian } from "@/lib/formatYearsInRussian";
+import { getNearestEvents } from "@/lib/contactHelpers";
 
 // This endpoint should be called by a cron job
 export async function GET(req: NextRequest) {
@@ -23,50 +23,58 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    // Get current date and date one week from now
-    const today = new Date();
-    const year = today.getFullYear();
-    today.setHours(0, 0, 0, 0); // Set to start of day
-    const nextWeek = new Date(today);
-    nextWeek.setDate(today.getDate() + 14);
+    const { upcomingEvents, today } = getNearestEvents(
+      contacts as any as Contact[]
+    );
 
-    // Collect events happening in the next week
-    const upcomingEvents: Array<{
-      contactName: string;
-      eventDate: Date;
-      shortDateStr: string;
-      eventDescription: string;
-    }> = [];
+    // // Get current date and date one week from now
+    // const today = new Date();
+    // const year = today.getFullYear();
+    // const nextYear = year + 1;
+    // const todayMonthDay = `${today.getMonth() + 1}.${today.getDate()}`;
+    // today.setHours(0, 0, 0, 0); // Set to start of day
+    // const nextTwoWeeks = new Date(today);
+    // nextTwoWeeks.setDate(today.getDate() + 14);
 
-    (contacts as any as Contact[]).forEach((contact) => {
-      if (contact.events) {
-        Object.entries(contact.events).forEach(([description, dateStr]) => {
-          // Parse date in DD.MM.YYYY format
-          const [day, month, yearFromEvent] = dateStr.split(".");
-          const eventDate = new Date(year, parseInt(month) - 1, parseInt(day));
-          const eventYear = yearFromEvent ? parseInt(yearFromEvent) : year;
-          const howManyYears = year - eventYear;
+    // // Collect events happening in the next week
+    // const upcomingEvents: Array<{
+    //   contactName: string;
+    //   eventDate: Date;
+    //   shortDateStr: string;
+    //   eventDescription: string;
+    // }> = [];
 
-          // Check if event is in the upcoming week
-          if (eventDate >= today && eventDate <= nextWeek) {
-            upcomingEvents.push({
-              contactName: `${contact.name.lastName} ${
-                contact.name.firstName
-              } ${contact.name.middleName || ""}`,
-              shortDateStr: `${day}.${month} ${eventDate
-                .toLocaleDateString("ru-RU", {
-                  weekday: "long",
-                })
-                .toUpperCase()}`,
-              eventDate,
-              eventDescription: `${description}${
-                howManyYears ? ` (${formatYearsInRussian(howManyYears)})` : ""
-              }`,
-            });
-          }
-        });
-      }
-    });
+    // (contacts as any as Contact[]).forEach((contact) => {
+    //   if (contact.events) {
+    //     Object.entries(contact.events).forEach(([description, dateStr]) => {
+    //       // Parse date in DD.MM.YYYY format
+    //       const [day, month, yearFromEvent] = dateStr.split(".");
+    //       const eventMonthDay = `${month}.${day}`;
+    //       const realYear = todayMonthDay > eventMonthDay ? nextYear : year;
+    //       const eventDate = new Date(realYear, parseInt(month) - 1, parseInt(day));
+    //       eventDate.setHours(0, 0, 0, 0);
+    //       const eventYear = yearFromEvent ? parseInt(yearFromEvent) : realYear;
+    //       const howManyYears = realYear - eventYear;
+
+    //       // Check if event is in the upcoming week
+    //       if (eventDate >= today && eventDate <= nextTwoWeeks) {
+    //         upcomingEvents.push({
+    //           contactName: getContactNameForEvent(contact),
+    //           shortDateStr: `${day}.${month} ${eventDate
+    //             .toLocaleDateString("ru-RU", {
+    //               weekday: "short",
+    //             })
+    //             .toUpperCase()}`,
+    //           eventDate,
+    //           eventDescription: formatEventDescription({
+    //             description,
+    //             howManyYears,
+    //           }),
+    //         });
+    //       }
+    //     });
+    //   }
+    // });
 
     // If no upcoming events, return early
     if (upcomingEvents.length === 0) {
@@ -76,16 +84,20 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // Sort events by date
-    upcomingEvents.sort((a, b) => {
-      return a.eventDate.getTime() - b.eventDate.getTime();
-    });
+    // // Sort events by date
+    // upcomingEvents.sort((a, b) => {
+    //   return a.eventDate.getTime() - b.eventDate.getTime();
+    // });
 
     // Format events for email
     const eventsList = upcomingEvents
       .map(
         (event) =>
-          `<li><strong>${event.shortDateStr}</strong>: ${event.contactName}, ${event.eventDescription}</li>`
+          `<li style="${
+            event.eventDate === today ? "color: red" : ""
+          }"><strong>${event.shortDateStr}</strong>: ${event.contactName}, ${
+            event.eventDescription
+          }</li>`
       )
       .join("");
 
