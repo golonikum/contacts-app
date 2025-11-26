@@ -24,7 +24,7 @@ export default function PWALayout({ children }: { children: React.ReactNode }) {
     // Register service worker
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
-        .register("/sw-new.js")
+        .register("/sw.js")
         .then((registration) => {
           console.log("Service Worker registered: ", registration);
 

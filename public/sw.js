@@ -22,7 +22,15 @@ self.addEventListener("install", (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log("Service Worker caching files");
-        return cache.addAll(urlsToCache);
+        // Используем Promise.allSettled для обработки каждого ресурса отдельно
+        return Promise.allSettled(
+          urlsToCache.map(url => {
+            return cache.add(url).catch(error => {
+              console.error(`Failed to cache ${url}:`, error);
+              return null;
+            });
+          })
+        );
       })
       .then(() => {
         console.log("Service Worker installed");
@@ -38,7 +46,7 @@ self.addEventListener("fetch", (event) => {
   if (!event.request.url.startsWith(self.location.origin)) {
     return;
   }
-  
+
   // For API requests, try network first
   if (event.request.url.includes("/api/")) {
     event.respondWith(
@@ -51,7 +59,27 @@ self.addEventListener("fetch", (event) => {
     );
     return;
   }
-  
+
+  // For HTML pages, always try network first, then fallback to cache
+  if (event.request.headers.get("accept").includes("text/html")) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          // If request succeeds, clone it and store in cache
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone);
+          });
+          return response;
+        })
+        .catch(() => {
+          // If network fails, try to get from cache
+          return caches.match(event.request);
+        })
+    );
+    return;
+  }
+
   // For other requests, try cache first, then network
   event.respondWith(
     caches.match(event.request)
