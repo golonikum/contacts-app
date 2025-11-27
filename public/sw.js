@@ -112,3 +112,67 @@ self.addEventListener("activate", (event) => {
     })
   );
 });
+
+// Push event - handle push messages
+self.addEventListener("push", (event) => {
+  console.log("Push message received");
+
+  let notificationData = {
+    title: "Новое уведомление",
+    options: {
+      body: "У вас новое уведомление",
+      icon: "/icon-192x192.png",
+      badge: "/icon-192x192.png",
+      tag: "contacts-app-event",
+      requireInteraction: false,
+      data: {
+        url: "/events"
+      }
+    }
+  };
+
+  if (event.data) {
+    try {
+      notificationData = event.data.json();
+    } catch (e) {
+      console.error("Error parsing push data:", e);
+    }
+  }
+
+  const title = notificationData.title;
+  const options = notificationData.options;
+
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
+});
+
+// Notification click event
+self.addEventListener("notificationclick", (event) => {
+  console.log("Notification click received");
+
+  event.notification.close();
+
+  // Handle notification click
+  if (event.notification.data && event.notification.data.url) {
+    event.waitUntil(
+      clients.openWindow(event.notification.data.url)
+    );
+  } else {
+    event.waitUntil(
+      clients.openWindow("/")
+    );
+  }
+});
+
+// Message event - handle messages from the app
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SHOW_NOTIFICATION") {
+    const { title, options } = event.data.payload;
+    
+    self.registration.showNotification(title, options)
+      .catch(error => {
+        console.error("Error showing notification:", error);
+      });
+  }
+});

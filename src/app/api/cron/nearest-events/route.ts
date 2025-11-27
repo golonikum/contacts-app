@@ -122,7 +122,7 @@ export async function GET(req: NextRequest) {
       },
       body: JSON.stringify({
         from: process.env.RESEND_FROM_EMAIL || "Acme <onboarding@resend.dev>",
-        to: ["goloniko@gmail.com"],
+        to: [process.env.ADMIN_EMAIL],
         subject: `Предстоящие события (${upcomingEvents.length})`,
         html: emailContent,
       }),
