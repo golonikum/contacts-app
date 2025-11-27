@@ -62,7 +62,7 @@ class PushNotificationService {
       console.warn("Push notifications are not supported on this device");
       return false;
     }
-    debugger;
+
     try {
       // Register or update service worker
       const registration = await this.registerOrUpdateServiceWorker();

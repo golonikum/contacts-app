@@ -7,8 +7,9 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 
 const navItems = [
-  { href: "/contacts", label: "Контакты" },
   { href: "/events", label: "События" },
+  { href: "/contacts", label: "Контакты" },
+  { href: "/subscriptions", label: "Подписки" },
 ];
 
 export function Navigation() {

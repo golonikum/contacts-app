@@ -20,7 +20,7 @@ export default function RegisterPage() {
   // Check if user is already logged in
   useEffect(() => {
     if (user) {
-      router.push("/contacts");
+      router.push("/events");
     }
   }, [router, user]);
 
