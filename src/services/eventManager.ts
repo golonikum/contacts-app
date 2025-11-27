@@ -135,11 +135,17 @@ class EventManager {
   }
 
   // Show notification for an event
+  /**
+   * Displays a notification based on the event type
+   * @param event - The event object containing notification details
+   */
   private showEventNotification(event: Event): void {
-    let title = "";
-    let body = "";
-    let icon = "";
+    // Initialize default notification values
+    let title = "Напоминание";
+    let body = event.description;
+    let icon = "🎂";
 
+    // Set notification content based on event type
     switch (event.type) {
       case EventType.BIRTHDAY:
         title = `День рождения: ${event.contactName || "Контакт"}`;
@@ -163,6 +169,7 @@ class EventManager {
         break;
     }
 
+    // Show the notification with the configured content
     notificationService.showNotification(title, {
       body,
       icon: "/icon-192x192.png",

@@ -5,20 +5,26 @@ import { useState } from "react";
 export function PushTestButton() {
   const [status, setStatus] = useState<string>("");
   const [title, setTitle] = useState<string>("Тестовое Push-уведомление");
-  const [message, setMessage] = useState<string>("Это тестовое push-уведомление, отправленное с сервера");
+  const [message, setMessage] = useState<string>(
+    "Это тестовое push-уведомление, отправленное с сервера"
+  );
   const [url, setUrl] = useState<string>("/events");
 
+  /**
+   * Function to send push notification to the server
+   * Handles the entire process from sending the request to updating the status
+   */
   const sendPushNotification = async () => {
     setStatus("Отправка...");
 
     try {
-      const response = await fetch('/api/notifications', {
-        method: 'POST',
+      const response = await fetch("/api/notifications", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          action: 'send',
+          action: "send",
           title,
           message,
           url,
@@ -33,7 +39,7 @@ export function PushTestButton() {
         setStatus(`Ошибка: ${data.message}`);
       }
     } catch (error) {
-      console.error('Error sending push notification:', error);
+      console.error("Error sending push notification:", error);
       setStatus("Ошибка при отправке уведомления");
     }
 
@@ -43,7 +49,9 @@ export function PushTestButton() {
 
   return (
     <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-      <h3 className="text-lg font-semibold mb-2">Тестирование Push-уведомлений</h3>
+      <h3 className="text-lg font-semibold mb-2">
+        Тестирование Push-уведомлений
+      </h3>
 
       <div className="space-y-3">
         <div>
