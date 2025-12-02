@@ -116,9 +116,16 @@ class EventManager {
     console.log("Upcoming events for notification:", upcomingEvents);
 
     // Show notifications for upcoming events
-    upcomingEvents.forEach((event) => {
-      this.showEventNotification(event);
-    });
+    const summaryEvent: Event = upcomingEvents.reduce(
+      (res, event) => ({
+        ...res,
+        ...event,
+        description: `${res.description}\n${event.contactName}: ${event.description}`,
+      }),
+      {} as Event
+    );
+
+    this.showEventNotification(summaryEvent);
   }
 
   // Test function to trigger a notification immediately
@@ -139,43 +146,49 @@ class EventManager {
    * Displays a notification based on the event type
    * @param event - The event object containing notification details
    */
+  /**
+   * Displays a notification based on the event type and details
+   * @param event - The event object containing notification details
+   */
   private showEventNotification(event: Event): void {
     // Initialize default notification values
-    let title = "Напоминание";
-    let body = event.description;
-    let icon = "🎂";
+    const title = "Напоминание"; // Default title in Russian
+    const body = event.description; // Use event description as body
+    const icon = "🎂"; // Default cake emoji icon
 
     // Set notification content based on event type
-    switch (event.type) {
-      case EventType.BIRTHDAY:
-        title = `День рождения: ${event.contactName || "Контакт"}`;
-        body = `Сегодня день рождения у ${event.contactName || "контакта"}!`;
-        icon = "🎂";
-        break;
-      case EventType.MEETING:
-        title = `Встреча: ${event.title}`;
-        body = event.description || "Запланированная встреча";
-        icon = "🤝";
-        break;
-      case EventType.REMINDER:
-        title = `Напоминание: ${event.title}`;
-        body = event.description || "Не забудьте!";
-        icon = "📝";
-        break;
-      case EventType.TASK:
-        title = `Задача: ${event.title}`;
-        body = event.description || "Запланированная задача";
-        icon = "✅";
-        break;
-    }
+    // switch (event.type) {
+    //   case EventType.BIRTHDAY:
+    //     title = `День рождения: ${event.contactName || "Контакт"}`; // Birthday title with contact name
+    //     body = `Сегодня день рождения у ${event.contactName || "контакта"}!`; // Birthday message
+    //     icon = "🎂"; // Cake emoji for birthday
+    //     break;
+    //   case EventType.MEETING:
+    //     title = `Встреча: ${event.title}`; // Meeting title
+    //     body = event.description || "Запланированная встреча"; // Meeting description or default message
+    //     icon = "🤝"; // Handshake emoji for meeting
+    //     break;
+    //   case EventType.REMINDER:
+    //     title = `Напоминание: ${event.title}`; // Reminder title
+    //     body = event.description || "Не забудьте!"; // Reminder message or default
+    //     icon = "📝"; // Note emoji for reminder
+    //     break;
+    //   case EventType.TASK:
+    //     title = `Задача: ${event.title}`; // Task title
+    //     body = event.description || "Запланированная задача"; // Task description or default
+    //     icon = "✅";
+    //     break;
+    // }
 
     // Show the notification with the configured content
     notificationService.showNotification(title, {
-      body,
-      icon: "/icon-192x192.png",
+      body, // Notification body text
+      // icon: "/icon-192x192.png", // App icon for notification
+      icon,
       data: {
-        eventId: event.id,
-        url: event.contactId ? `/contacts/${event.contactId}` : "/events",
+        // Additional data for notification handling
+        eventId: event.id, // ID of the event
+        url: event.contactId ? `/contacts/${event.contactId}` : "/events", // Navigation URL based on contact ID
       },
     });
   }
