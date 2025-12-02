@@ -23,7 +23,7 @@ export interface Event {
 class EventManager {
   private events: Event[] = [];
   private checkInterval: NodeJS.Timeout | null = null;
-  private readonly CHECK_INTERVAL_MS = 6000; // Check every minute
+  private readonly CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000; // Check every minute
 
   constructor() {
     this.startEventChecking();
