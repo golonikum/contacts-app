@@ -74,7 +74,7 @@ export const getContactNameForEvent = (contact: Contact) =>
   contact.name.dignity
     ? `${contact.name.dignity} ${contact.name.firstName} (${contact.name.lastName})`
     : `${contact.name.lastName} ${contact.name.firstName}${
-        ` ${contact.name.middleName}` || ""
+        contact.name.middleName ? ` ${contact.name.middleName}` : ""
       }`;
 
 export const formatEventDescription = ({
@@ -106,7 +106,11 @@ export const getNearestEvents = (
   const today = new Date();
   const year = today.getFullYear();
   const nextYear = year + 1;
-  const todayMonthDay = `${today.getMonth() + 1}.${today.getDate()}`;
+  const curMonth = today.getMonth() + 1;
+  const curDay = today.getDate();
+  const todayMonthDay = `${curMonth < 10 ? "0" : ""}${curMonth}.${
+    curDay < 10 ? "0" : ""
+  }${curDay}${today.getDate()}`;
   today.setHours(0, 0, 0, 0); // Set to start of day
   const nextTwoWeeks = new Date(today);
   nextTwoWeeks.setDate(today.getDate() + 14);

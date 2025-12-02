@@ -21,6 +21,7 @@ export default function PWALayout({ children }: { children: React.ReactNode }) {
             title: item.eventDescription,
             contactName: item.contactName,
             description: item.eventDescription,
+            shortDateStr: item.shortDateStr,
           }))
         );
       })();

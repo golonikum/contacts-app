@@ -17,12 +17,13 @@ export interface Event {
   type?: EventType;
   contactId?: string;
   contactName?: string;
+  shortDateStr?: string;
 }
 
 class EventManager {
   private events: Event[] = [];
   private checkInterval: NodeJS.Timeout | null = null;
-  private readonly CHECK_INTERVAL_MS = 60000; // Check every minute
+  private readonly CHECK_INTERVAL_MS = 6000; // Check every minute
 
   constructor() {
     this.startEventChecking();
@@ -104,8 +105,8 @@ class EventManager {
   // Check for events that need notifications
   private checkForEvents(): void {
     const today = new Date();
-    const nextTwoWeeks = new Date(today);
     today.setHours(0, 0, 0, 0);
+    const nextTwoWeeks = new Date(today);
     nextTwoWeeks.setDate(today.getDate() + 14);
 
     // Get events happening in the next 5 minutes
@@ -120,10 +121,14 @@ class EventManager {
       (res, event) => ({
         ...res,
         ...event,
-        description: `${res.description}\n${event.contactName}: ${event.description}`,
+        description: `${res.description || ""}\n${event.shortDateStr}: ${
+          event.contactName
+        }, ${event.description}`,
       }),
       {} as Event
     );
+
+    console.log(summaryEvent);
 
     this.showEventNotification(summaryEvent);
   }
