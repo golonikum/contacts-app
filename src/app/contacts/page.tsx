@@ -378,7 +378,7 @@ export default function ContactsPage() {
 
                     {contact.address && (
                       <div className="flex items-center gap-2 mb-2">
-                        <MapPin className="h-4 w-4 text-muted-foreground" />
+                        <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
                         <span className="text-sm">{contact.address}</span>
                       </div>
                     )}

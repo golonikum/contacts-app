@@ -27,55 +27,6 @@ export async function GET(req: NextRequest) {
       contacts as any as Contact[]
     );
 
-    // // Get current date and date one week from now
-    // const today = new Date();
-    // const year = today.getFullYear();
-    // const nextYear = year + 1;
-    // const todayMonthDay = `${today.getMonth() + 1}.${today.getDate()}`;
-    // today.setHours(0, 0, 0, 0); // Set to start of day
-    // const nextTwoWeeks = new Date(today);
-    // nextTwoWeeks.setDate(today.getDate() + 14);
-
-    // // Collect events happening in the next week
-    // const upcomingEvents: Array<{
-    //   contactName: string;
-    //   eventDate: Date;
-    //   shortDateStr: string;
-    //   eventDescription: string;
-    // }> = [];
-
-    // (contacts as any as Contact[]).forEach((contact) => {
-    //   if (contact.events) {
-    //     Object.entries(contact.events).forEach(([description, dateStr]) => {
-    //       // Parse date in DD.MM.YYYY format
-    //       const [day, month, yearFromEvent] = dateStr.split(".");
-    //       const eventMonthDay = `${month}.${day}`;
-    //       const realYear = todayMonthDay > eventMonthDay ? nextYear : year;
-    //       const eventDate = new Date(realYear, parseInt(month) - 1, parseInt(day));
-    //       eventDate.setHours(0, 0, 0, 0);
-    //       const eventYear = yearFromEvent ? parseInt(yearFromEvent) : realYear;
-    //       const howManyYears = realYear - eventYear;
-
-    //       // Check if event is in the upcoming week
-    //       if (eventDate >= today && eventDate <= nextTwoWeeks) {
-    //         upcomingEvents.push({
-    //           contactName: getContactNameForEvent(contact),
-    //           shortDateStr: `${day}.${month} ${eventDate
-    //             .toLocaleDateString("ru-RU", {
-    //               weekday: "short",
-    //             })
-    //             .toUpperCase()}`,
-    //           eventDate,
-    //           eventDescription: formatEventDescription({
-    //             description,
-    //             howManyYears,
-    //           }),
-    //         });
-    //       }
-    //     });
-    //   }
-    // });
-
     // If no upcoming events, return early
     if (upcomingEvents.length === 0) {
       return NextResponse.json({
@@ -84,17 +35,12 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // // Sort events by date
-    // upcomingEvents.sort((a, b) => {
-    //   return a.eventDate.getTime() - b.eventDate.getTime();
-    // });
-
     // Format events for email
     const eventsList = upcomingEvents
       .map(
         (event) =>
           `<li style="${
-            event.eventDate === today ? "color: red" : ""
+            event.eventDate.valueOf() === today.valueOf() ? "color: red" : ""
           }"><strong>${event.shortDateStr}</strong>: ${event.contactName}, ${
             event.eventDescription
           }</li>`
@@ -104,7 +50,7 @@ export async function GET(req: NextRequest) {
     // Create email content
     const emailContent = `
       <html>
-        <body>
+        <body style="font-family: monospace !important">
           <h2>Предстоящие события</h2>
           <ul>
             ${eventsList}

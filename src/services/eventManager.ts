@@ -1,20 +1,11 @@
 import notificationService from "./notificationService";
 
-// Event types
-export enum EventType {
-  BIRTHDAY = "birthday",
-  MEETING = "meeting",
-  REMINDER = "reminder",
-  TASK = "task",
-}
-
 // Event interface
 export interface Event {
   id?: string;
   title: string;
   description?: string;
   date: Date;
-  type?: EventType;
   contactId?: string;
   contactName?: string;
   shortDateStr?: string;
@@ -140,7 +131,6 @@ class EventManager {
       title: "Тестовое уведомление",
       description: "Это тестовое уведомление для проверки работы системы",
       date: new Date(),
-      type: EventType.REMINDER,
     };
 
     this.showEventNotification(testEvent);
@@ -159,37 +149,11 @@ class EventManager {
     // Initialize default notification values
     const title = "Напоминание"; // Default title in Russian
     const body = event.description; // Use event description as body
-    const icon = "🎂"; // Default cake emoji icon
-
-    // Set notification content based on event type
-    // switch (event.type) {
-    //   case EventType.BIRTHDAY:
-    //     title = `День рождения: ${event.contactName || "Контакт"}`; // Birthday title with contact name
-    //     body = `Сегодня день рождения у ${event.contactName || "контакта"}!`; // Birthday message
-    //     icon = "🎂"; // Cake emoji for birthday
-    //     break;
-    //   case EventType.MEETING:
-    //     title = `Встреча: ${event.title}`; // Meeting title
-    //     body = event.description || "Запланированная встреча"; // Meeting description or default message
-    //     icon = "🤝"; // Handshake emoji for meeting
-    //     break;
-    //   case EventType.REMINDER:
-    //     title = `Напоминание: ${event.title}`; // Reminder title
-    //     body = event.description || "Не забудьте!"; // Reminder message or default
-    //     icon = "📝"; // Note emoji for reminder
-    //     break;
-    //   case EventType.TASK:
-    //     title = `Задача: ${event.title}`; // Task title
-    //     body = event.description || "Запланированная задача"; // Task description or default
-    //     icon = "✅";
-    //     break;
-    // }
 
     // Show the notification with the configured content
     notificationService.showNotification(title, {
       body, // Notification body text
-      // icon: "/icon-192x192.png", // App icon for notification
-      icon,
+      icon: "/icon-192x192.png", // App icon for notification
       data: {
         // Additional data for notification handling
         eventId: event.id, // ID of the event
