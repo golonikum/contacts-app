@@ -20,49 +20,9 @@ class EventManager {
     this.startEventChecking();
   }
 
-  // Add a new event
-  addEvent(event: Event): void {
-    this.events.push(event);
-    this.sortEvents();
-  }
-
   resetEvents(events: Event[]): void {
     this.events = [...events];
     this.sortEvents();
-  }
-
-  // Remove an event
-  removeEvent(id: string): void {
-    this.events = this.events.filter((event) => event.id !== id);
-  }
-
-  // Get all events
-  getEvents(): Event[] {
-    return [...this.events];
-  }
-
-  // Get events for a specific date
-  getEventsForDate(date: Date): Event[] {
-    const startOfDay = new Date(date);
-    startOfDay.setHours(0, 0, 0, 0);
-
-    const endOfDay = new Date(date);
-    endOfDay.setHours(23, 59, 59, 999);
-
-    return this.events.filter(
-      (event) => event.date >= startOfDay && event.date <= endOfDay
-    );
-  }
-
-  // Get upcoming events (within the next 14 days)
-  getUpcomingEvents(): Event[] {
-    const now = new Date();
-    const tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 14);
-
-    return this.events.filter(
-      (event) => event.date >= now && event.date <= tomorrow
-    );
   }
 
   // Sort events by date
@@ -119,32 +79,15 @@ class EventManager {
       {} as Event
     );
 
-    console.log(summaryEvent);
-
     this.showEventNotification(summaryEvent);
   }
 
   // Test function to trigger a notification immediately
   testNotification(): void {
-    const testEvent: Event = {
-      id: "test-" + Date.now(),
-      title: "Тестовое уведомление",
-      description: "Это тестовое уведомление для проверки работы системы",
-      date: new Date(),
-    };
-
-    this.showEventNotification(testEvent);
+    this.checkForEvents();
   }
 
   // Show notification for an event
-  /**
-   * Displays a notification based on the event type
-   * @param event - The event object containing notification details
-   */
-  /**
-   * Displays a notification based on the event type and details
-   * @param event - The event object containing notification details
-   */
   private showEventNotification(event: Event): void {
     // Initialize default notification values
     const title = "Напоминание"; // Default title in Russian
