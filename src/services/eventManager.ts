@@ -79,7 +79,9 @@ class EventManager {
       {} as Event
     );
 
-    this.showEventNotification(summaryEvent);
+    if (upcomingEvents.length) {
+      this.showEventNotification(summaryEvent);
+    }
   }
 
   // Test function to trigger a notification immediately
