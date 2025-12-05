@@ -110,8 +110,8 @@ export const getNearestEvents = (
   const curDay = today.getDate();
   const todayMonthDay = `${curMonth < 10 ? "0" : ""}${curMonth}.${
     curDay < 10 ? "0" : ""
-  }${curDay}${today.getDate()}`;
-  today.setHours(0, 0, 0, 0); // Set to start of day
+  }${curDay}`;
+  today.setHours(12, 0, 0, 0); // Set to start of day
   const nextTwoWeeks = new Date(today);
   nextTwoWeeks.setDate(today.getDate() + 14);
 
@@ -131,7 +131,7 @@ export const getNearestEvents = (
           parseInt(month) - 1,
           parseInt(day)
         );
-        eventDate.setHours(0, 0, 0, 0);
+        eventDate.setHours(12, 0, 0, 0);
         const eventYear = yearFromEvent ? parseInt(yearFromEvent) : realYear;
         const howManyYears = realYear - eventYear;
 

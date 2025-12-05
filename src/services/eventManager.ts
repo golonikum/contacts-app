@@ -56,7 +56,7 @@ class EventManager {
   // Check for events that need notifications
   private checkForEvents(): void {
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    today.setHours(12, 0, 0, 0);
     const nextTwoWeeks = new Date(today);
     nextTwoWeeks.setDate(today.getDate() + 14);
 
