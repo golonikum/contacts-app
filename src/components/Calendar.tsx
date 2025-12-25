@@ -3,6 +3,7 @@ import {
   getContactNameForEvent,
 } from "@/lib/contactHelpers";
 import { getAllContacts } from "@/services/contactService";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 
 interface CalendarDay {
@@ -20,6 +21,7 @@ interface CalendarProps {
 }
 
 export function Calendar({ year, isMobile = false }: CalendarProps) {
+  const router = useRouter();
   const [calendarDays, setCalendarDays] = useState<CalendarDay[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const currentDayRef = useRef<HTMLDivElement>(null);
@@ -174,7 +176,8 @@ export function Calendar({ year, isMobile = false }: CalendarProps) {
                 {day.events.map((event, eventIndex) => (
                   <div
                     key={eventIndex}
-                    className="bg-primary/10 text-primary rounded p-2 text-sm"
+                    className="cursor-pointer bg-primary/10 text-primary rounded p-2 text-sm"
+                    onClick={() => router.push(`/contacts/${event.contactId}`)}
                   >
                     <div className="font-medium">{event.contactName}</div>
                     <div>{event.description}</div>
@@ -213,7 +216,7 @@ export function Calendar({ year, isMobile = false }: CalendarProps) {
                 <div
                   key={index}
                   ref={isToday(day.date) ? currentDayRef : null}
-                  className={`aspect-square border rounded p-1 overflow-hidden hover:bg-muted transition-colors ${
+                  className={`flex flex-col aspect-square border rounded p-1 overflow-hidden hover:bg-muted transition-colors ${
                     isToday(day.date) ? "ring-2 ring-primary" : ""
                   }`}
                 >
@@ -221,21 +224,19 @@ export function Calendar({ year, isMobile = false }: CalendarProps) {
                     {day.date.getDate()}
                   </div>
                   {day.events.length > 0 && (
-                    <div className="space-y-1">
-                      {day.events.slice(0, 2).map((event, eventIndex) => (
+                    <div className="space-y-1 overflow-auto">
+                      {day.events.map((event, eventIndex) => (
                         <div
                           key={eventIndex}
-                          className="text-xs bg-primary text-primary-foreground rounded p-1 truncate"
+                          className="cursor-pointer text-xs bg-primary text-primary-foreground rounded p-1 truncate"
                           title={`${event.contactName}: ${event.description}`}
+                          onClick={() =>
+                            router.push(`/contacts/${event.contactId}`)
+                          }
                         >
                           {event.contactName}: {event.description}
                         </div>
                       ))}
-                      {day.events.length > 2 && (
-                        <div className="text-xs text-muted-foreground">
-                          +{day.events.length - 2} еще
-                        </div>
-                      )}
                     </div>
                   )}
                 </div>
