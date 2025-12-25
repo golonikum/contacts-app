@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     try {
       await sendEmail({
         subject: `Попытка входа в Contacts App`,
-        htmlContent: `<p>Сегодня в ${new Date().toLocaleDateString()} была попытка входа в аккаунт ${email}</p>`,
+        htmlContent: `<p>Сегодня в ${new Date().toLocaleTimeString()} была совершена попытка входа в аккаунт ${email}.</p>`,
       });
     } catch (e) {}
 
@@ -38,10 +38,7 @@ export async function POST(request: NextRequest) {
     const isValid = await verifyPassword(password, user.password);
 
     if (!isValid) {
-      return NextResponse.json(
-        { error: "Неверные учетные данные" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Неверный пароль" }, { status: 401 });
     }
 
     // Generate a JWT token
