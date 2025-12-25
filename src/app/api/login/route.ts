@@ -1,10 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { verifyPassword, generateToken } from "@/lib/serverAuth";
+import { sendEmail } from "@/lib/sendEmail";
 
 export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json();
+
+    // Send email
+    try {
+      await sendEmail({
+        subject: `Попытка входа в Contacts App`,
+        htmlContent: `<p>Сегодня в ${new Date().toLocaleDateString()} была попытка входа в аккаунт ${email}</p>`,
+      });
+    } catch (e) {}
 
     if (!email || !password) {
       return NextResponse.json(

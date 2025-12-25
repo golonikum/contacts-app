@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { Contact } from "@/types/contact";
 import { getNearestEvents } from "@/lib/contactHelpers";
+import { sendEmail } from "@/lib/sendEmail";
 
 // This endpoint should be called by a cron job
 export async function GET(req: NextRequest) {
@@ -60,18 +61,9 @@ export async function GET(req: NextRequest) {
     `;
 
     // Send email
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-      },
-      body: JSON.stringify({
-        from: process.env.RESEND_FROM_EMAIL || "Acme <onboarding@resend.dev>",
-        to: [process.env.ADMIN_EMAIL],
-        subject: `Предстоящие события (${upcomingEvents.length})`,
-        html: emailContent,
-      }),
+    const res = await sendEmail({
+      subject: `Предстоящие события (${upcomingEvents.length})`,
+      htmlContent: emailContent,
     });
 
     return NextResponse.json({
